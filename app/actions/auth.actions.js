@@ -4,7 +4,7 @@ import userModel from "@/app/models/user.model";
 import bcrypt from "bcryptjs";
 import { generateToken } from "@/app/lib/generateToken";
 import { cookies } from "next/headers";
-export async function regsiter(formData) {
+export async function register(formData) {
   try {
     await connectDb();
     const { fullname, email, password } = formData;
@@ -13,7 +13,7 @@ export async function regsiter(formData) {
     }
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-      return ({ error: "User exists" }, { status: 400 });
+      return ({ error: "User exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await userModel.create({

@@ -22,7 +22,7 @@ const analysisSchema = new mongoose.Schema(
     score: {
       type: Number,
     },
-    explaination: {
+    explanation: {
       type: String,
     },
     resources: [
