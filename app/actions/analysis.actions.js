@@ -6,8 +6,7 @@ import connectDb from "../lib/db";
 import { extractClaim } from "../lib/pipeline/extract";
 import { searchEvidence } from "../lib/pipeline/search";
 import { generateVerdict } from "../lib/pipeline/verdict";
-const testArticle =
-  "The Indian government announced free laptops for all college students under Digital India scheme 2024";
+
 export const getUserFromToken = async () => {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -20,6 +19,7 @@ export const createAnalysis = async ({ article }) => {
   try {
     await connectDb();
     const userId = await getUserFromToken();
+
     if (!userId) return { error: "Unauthorized" };
 
     // Step 1: Extract (Returns Array of Strings)
@@ -39,10 +39,11 @@ export const createAnalysis = async ({ article }) => {
       explanation: analyse.explanation,
       resources: verifiedUrls,
     });
-    return { success: true, analysis };
+    return {
+      success: true,
+      analysis: JSON.parse(JSON.stringify(analysis.toObject())),
+    };
   } catch (error) {
-    return { error: "Internal server error" };
+    return { error: "Internal Server Error" };
   }
 };
-const result = await createAnalysis({ article: testArticle });
-console.log(result);

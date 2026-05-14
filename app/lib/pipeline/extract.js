@@ -1,11 +1,11 @@
 import { generateText, Output } from "ai";
-import {google} from "@ai-sdk/google"
+import { google } from "@ai-sdk/google";
 import { z } from "zod";
 
 export const extractClaim = async (articleText) => {
   try {
     const { output } = await generateText({
-      model: google("gemini-1.5-flash"),
+      model: google("gemini-2.5-flash"),
       output: Output.object({
         schema: z.object({
           claims: z

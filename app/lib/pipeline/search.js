@@ -1,8 +1,8 @@
 import { tavily } from "@tavily/core";
 
-const tav = tavily({ apiKey: process.env.TAVILY_API_KEY });
 export const searchEvidence = async (claimsArray) => {
   try {
+    const tav = tavily({ apiKey: process.env.TAVILY_API_KEY });
     const searchPromises = claimsArray.map((singleClaimString) => {
       return tav.search(singleClaimString);
     });
