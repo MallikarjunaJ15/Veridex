@@ -6,6 +6,7 @@ import connectDb from "../lib/db";
 import { extractClaim } from "../lib/pipeline/extract";
 import { searchEvidence } from "../lib/pipeline/search";
 import { generateVerdict } from "../lib/pipeline/verdict";
+import mongoose from "mongoose";
 
 export const getUserFromToken = async () => {
   const cookieStore = await cookies();
@@ -18,7 +19,8 @@ export const getUserFromToken = async () => {
 export const createAnalysis = async ({ article }) => {
   try {
     await connectDb();
-    const userId = await getUserFromToken();
+     const userId = new mongoose.Types.ObjectId()
+    // const userId = await getUserFromToken();
 
     if (!userId) return { error: "Unauthorized" };
 
