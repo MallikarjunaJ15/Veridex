@@ -19,11 +19,9 @@ export const getUserFromToken = async () => {
 export const createAnalysis = async ({ article }) => {
   try {
     await connectDb();
-     const userId = new mongoose.Types.ObjectId()
-    // const userId = await getUserFromToken();
 
+    const userId = await getUserFromToken();
     if (!userId) return { error: "Unauthorized" };
-
     // Step 1: Extract (Returns Array of Strings)
     const claimsArray = await extractClaim(article);
     // Step 2: Search (Returns Array of Objects)
