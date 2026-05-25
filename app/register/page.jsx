@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { register } from "../actions/auth.actions";
-import { Eye, EyeOff } from "lucide-react"; 
+import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
   const [input, setInput] = useState({
@@ -10,6 +11,8 @@ const Signup = () => {
     email: "",
     password: "",
   });
+
+  const router = useRouter();
 
   const [view, setView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +35,10 @@ const Signup = () => {
         password: input.password,
       };
 
-      const apiresponse = register(formdata);
+      const apiresponse = await register(formdata);
+      if (apiresponse?.success) {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Signup failed:", error);
     } finally {
@@ -111,13 +117,13 @@ const Signup = () => {
                   onChange={onChangeHandler}
                   value={input.password}
                   name="password"
-                  type={view ? "text" : "password"} 
+                  type={view ? "text" : "password"}
                   required
                   placeholder="••••••••"
                   className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl pl-4 pr-12 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#c8ff00] focus:ring-1 focus:ring-[#c8ff00] transition-all"
                 />
                 <button
-                  type="button" 
+                  type="button"
                   onClick={() => setView(!view)}
                   className="absolute right-4 text-zinc-500 hover:text-white transition-colors focus:outline-none"
                 >

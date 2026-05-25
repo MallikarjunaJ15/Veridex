@@ -27,7 +27,6 @@ const Login = () => {
 
     try {
       const response = await loginUser(input);
-
       if (response?.error) {
         setServerError(response.error);
       } else if (response?.success) {

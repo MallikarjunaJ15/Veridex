@@ -1,26 +1,17 @@
 "use server";
-import { cookies } from "next/headers";
 import analysisModel from "../models/analysis.model";
-import { jwtVerify } from "jose";
 import connectDb from "../lib/db";
 import { extractClaim } from "../lib/pipeline/extract";
 import { searchEvidence } from "../lib/pipeline/search";
 import { generateVerdict } from "../lib/pipeline/verdict";
-import mongoose from "mongoose";
+import { generateUserFromToken } from "./auth.actions";
 
-export const getUserFromToken = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-  if (!token) return null;
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-  const { payload } = await jwtVerify(token, secret);
-  return payload.userId;
-};
+
 export const createAnalysis = async ({ article }) => {
   try {
     await connectDb();
 
-    const userId = await getUserFromToken();
+    const userId = await generateUserFromToken();
     if (!userId) return { error: "Unauthorized" };
     // Step 1: Extract (Returns Array of Strings)
     const claimsArray = await extractClaim(article);

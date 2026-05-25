@@ -4,6 +4,8 @@ import userModel from "@/app/models/user.model";
 import bcrypt from "bcryptjs";
 import { generateToken } from "@/app/lib/generateToken";
 import { cookies } from "next/headers";
+import { jwt } from "zod";
+import { jwtVerify } from "jose";
 export async function register(formData) {
   try {
     await connectDb();
@@ -13,7 +15,7 @@ export async function register(formData) {
     }
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-      return ({ error: "User exists" });
+      return { error: "User exists" };
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await userModel.create({
@@ -31,7 +33,7 @@ export async function register(formData) {
 
     return { success: true, message: "Registered successfully" };
   } catch (error) {
-     return { error: "Internal Server Error" };
+    return { error: "Internal Server Error" };
   }
 }
 
@@ -61,5 +63,29 @@ export const loginUser = async (formData) => {
     return { success: true, message: "Welcome to Veridex" };
   } catch (error) {
     return { error: "Internal Server Error" };
+  }
+};
+
+export const generateUserFromToken = async () => {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    if (!token) return null;
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    return payload.userId;
+  } catch (error) {}
+};
+
+export const getme = async () => {
+  try {
+    await connectDb();
+    const userId = await generateUserFromToken();
+    if (!userId) return { user: null };
+    const user = await userModel.findById(userId).select("-password").lean();
+    return { user };
+  } catch (error) {
+    console.error("Error in getme:", error);
+    return { user: null };
   }
 };
