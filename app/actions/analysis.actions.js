@@ -6,7 +6,6 @@ import { searchEvidence } from "../lib/pipeline/search";
 import { generateVerdict } from "../lib/pipeline/verdict";
 import { generateUserFromToken } from "./auth.actions";
 
-
 export const createAnalysis = async ({ article }) => {
   try {
     await connectDb();
@@ -36,5 +35,34 @@ export const createAnalysis = async ({ article }) => {
     };
   } catch (error) {
     return { error: "Internal Server Error" };
+  }
+};
+
+export const getUserHistory = async () => {
+  try {
+    const userId = await generateUserFromToken();
+    if (!userId) return { message: "User not found" };
+    const analysis = await analysisModel
+      .find({ userId: userId })
+      .sort({ createdAt: -1 })
+      .lean();
+    return {
+      analysis: JSON.parse(JSON.stringify(analysis)),
+    };
+  } catch (error) {
+    console.log("internal server error", error);
+    return { error };
+  }
+};
+
+export const getAnalysisById = async (id) => {
+  try {
+    await connectDb();
+    const analysis = await analysisModel.findById(id).lean();
+    if (!analysis) return { analysis: null };
+    return { analysis: JSON.parse(JSON.stringify(analysis)) };
+  } catch (error) {
+    console.error("Error fetching analysis item:", error);
+    return { analysis: null };
   }
 };

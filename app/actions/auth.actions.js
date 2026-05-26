@@ -4,7 +4,6 @@ import userModel from "@/app/models/user.model";
 import bcrypt from "bcryptjs";
 import { generateToken } from "@/app/lib/generateToken";
 import { cookies } from "next/headers";
-import { jwt } from "zod";
 import { jwtVerify } from "jose";
 export async function register(formData) {
   try {
@@ -66,6 +65,15 @@ export const loginUser = async (formData) => {
   }
 };
 
+export const logoutUser = async () => {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete("token");
+  } catch (error) {
+    return { error: "Internal Server Error" };
+  }
+};
+
 export const generateUserFromToken = async () => {
   try {
     const cookieStore = await cookies();
@@ -83,7 +91,7 @@ export const getme = async () => {
     const userId = await generateUserFromToken();
     if (!userId) return { user: null };
     const user = await userModel.findById(userId).select("-password").lean();
-    return { user };
+    return { user: JSON.parse(JSON.stringify(user)) };
   } catch (error) {
     console.error("Error in getme:", error);
     return { user: null };

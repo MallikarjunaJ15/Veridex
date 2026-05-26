@@ -56,7 +56,6 @@ export default function AnalyzePage() {
 
     const t0 = Date.now();
     const apiPromise = createAnalysis({ article: article.trim() });
-
     addLog("Pipeline initialized", "info");
     addLog(`Article received — ${article.trim().length} characters`, "data");
 
@@ -206,8 +205,15 @@ export default function AnalyzePage() {
               Veri<span className="text-[#c8ff00]">dex</span>
             </span>
           </a>
-          <div className="font-mono-dm text-sm text-zinc-400 border border-[#1e1e1e] px-3 py-1 rounded-full tracking-widest uppercase">
-            RAG · AI · Real-time
+          <div className="flex items-center ">
+            <a href="/dashboard">
+              <button className="bg-[#c8ff00] text-[#080808] font-bold text-sm px-[22px] py-[10px] rounded-lg tracking-wide cursor-pointer border-none hover:brightness-110 transition-all">
+                DashBoard →
+              </button>
+            </a>
+            <div className="font-mono-dm text-sm text-zinc-400 border border-[#1e1e1e] px-3 py-1 rounded-full tracking-widest uppercase">
+              RAG · AI · Real-time
+            </div>
           </div>
         </nav>
 
