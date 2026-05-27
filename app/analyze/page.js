@@ -42,7 +42,7 @@ export default function AnalyzePage() {
   };
 
   const startAnalysis = async () => {
-    if (!article || article.trim().length < 20) {
+    if (!article || article.trim().length < 10) {
       alert("Please paste an article or claim to verify.");
       return;
     }
@@ -56,6 +56,7 @@ export default function AnalyzePage() {
 
     const t0 = Date.now();
     const apiPromise = createAnalysis({ article: article.trim() });
+    console.log("response", apiPromise?.analysis);
     addLog("Pipeline initialized", "info");
     addLog(`Article received — ${article.trim().length} characters`, "data");
 

@@ -17,7 +17,7 @@ const analysisSchema = new mongoose.Schema(
     },
     verdict: {
       type: String,
-      enum: ["fake", "real", "misleading"],
+      enum: ["fake", "real", "misleading", "unverifiable"],
     },
     score: {
       type: Number,

@@ -1,9 +1,8 @@
 "use client";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 
 export default function LandingPage({ user }) {
-  console.log("hi ia user from landing",user);
   const [scrolled, setScrolled] = useState(false);
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
@@ -354,27 +353,27 @@ export default function LandingPage({ user }) {
 
       <div className="font-syne bg-[#080808] text-[#f0ede8] overflow-x-hidden min-h-screen">
         {/* NAV */}
-        <NavBar scrolled={scrolled} user={user}/>
+        <NavBar scrolled={scrolled} user={user} />
         {/* HERO */}
-        <section className="min-h-screen flex flex-col items-center justify-center px-12 pt-[140px] pb-[100px] text-center relative">
+        <section className="min-h-screen flex flex-col items-center justify-center px-12 pt-35 pb-25 text-center relative">
           <div
-            className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
+            className="absolute top-[20%] md:top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-200 rounded-full pointer-events-none"
             style={{
               background:
                 "radial-gradient(ellipse, rgba(200,255,0,0.05) 0%, transparent 65%)",
             }}
           />
 
-          <div className="inline-flex items-center gap-2 bg-[#c8ff00]/[0.06] border border-[#c8ff00]/20 rounded-full px-[14px] py-[6px] mb-9">
-            <span className="w-[6px] h-[6px] rounded-full bg-[#c8ff00] inline-block animate-pulse-dot" />
+          <div className="inline-flex items-center gap-2 bg-[#c8ff00]/6 border border-[#c8ff00]/20 rounded-full px-3.5 py-1.5 mb-9">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#c8ff00] inline-block animate-pulse-dot" />
             <span className="font-mono-dm text-[11px] text-[#c8ff00] tracking-[1.5px] uppercase">
               Live AI Fact Verification
             </span>
           </div>
 
           <h1
-            className="font-extrabold leading-[0.92] tracking-[-4px] mb-7 max-w-[900px]"
-            style={{ fontSize: "clamp(48px, 7.5vw, 96px)" }}
+            className=" font-bold md:font-extrabold leading-[1.05] md:leading-[0.92] md:tracking-[-4px] mb-6 md:mb-7 max-w-225 text-white"
+            style={{ fontSize: "clamp(38px, 7.5vw, 96px)" }}
           >
             Stop sharing
             <br />
@@ -388,13 +387,13 @@ export default function LandingPage({ user }) {
             unknowingly
           </h1>
 
-          <p className="text-lg text-[#bbb] font-semibold max-w-[520px] leading-[1.7] mb-12">
+          <p className="text-base md:text-lg text-[#bbb] md:font-semibold max-w-130  leading-[1.6] md:leading-[1.7] mb-8  md:mb-12">
             Veridex uses a 3-step RAG AI pipeline to retrieve real-time
             evidence, compare it against any claim, and explain exactly why
             something is true, false, or misleading.
           </p>
 
-          <div className="flex items-center gap-4 mb-20">
+          <div className="felx  flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-20">
             <a href="/analyze">
               <button className="bg-[#c8ff00] text-[#080808] font-bold text-[15px] px-8 py-[14px] rounded-xl tracking-wide flex items-center gap-2 border-none cursor-pointer hover:brightness-110 transition-all">
                 Fact-check for free →
@@ -407,7 +406,7 @@ export default function LandingPage({ user }) {
             </a>
           </div>
 
-          <div className="flex border border-[#1a1a1a] rounded-2xl overflow-hidden">
+          <div className="flex flex-col sm:flex-row border border-[#1a1a1a] rounded-2xl overflow-hidden">
             {[
               { num: `${count1}%`, label: "Accuracy on benchmark datasets" },
               { num: `${count2}+`, label: "Live sources per analysis" },
@@ -415,9 +414,9 @@ export default function LandingPage({ user }) {
             ].map(({ num, label }, i) => (
               <div
                 key={i}
-                className={`px-10 py-6 text-center bg-[#0d0d0d] ${i < 2 ? "border-r border-[#1a1a1a]" : ""}`}
+                className={`px-10 py-6 text-center bg-[#0d0d0d] ${i < 2 ? "border-b sm:border-b-0 sm:border-r border-[#1a1a1a]" : ""}`}
               >
-                <div className="text-[32px] font-extrabold tracking-[-1.5px] text-[#f0ede8] mb-2">
+                <div className="text-[32px] font-extrabold :tracking-[-1.5px] text-[#f0ede8] mb-2">
                   {num}
                 </div>
                 <div className="font-mono-dm text-[12px] text-[#888] tracking-wide uppercase">
@@ -429,15 +428,15 @@ export default function LandingPage({ user }) {
         </section>
 
         {/* THE PROBLEM */}
-        <section className="py-[120px] px-12 max-w-[1100px] mx-auto">
-          <div className="grid grid-cols-2 gap-20 items-center">
+        <section className="py-5 md:py-30 px-12 max-w-275 mx-auto">
+          <div className="grid  grid-cols-1 gap-15 md:grid-cols-2 md:gap-20 items-center">
             <div>
               <div className="font-mono-dm text-[10px] tracking-[3px] uppercase text-[#c8ff00] mb-5">
                 The Problem
               </div>
               <h2
-                className="font-extrabold leading-[1.05] tracking-[-2px] mb-6"
-                style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
+                className=" font-extrabold leading-[1.05] tracking-[-2px] mb-6"
+                style={{ fontSize: "clamp(28px, 4vw, 52px)" }}
               >
                 Misinformation spreads
                 <br />
@@ -463,7 +462,7 @@ export default function LandingPage({ user }) {
                   key={i}
                   className="problem-card flex items-start gap-4 px-5 py-4 bg-[#0d0d0d] border border-[#1a1a1a] rounded-xl"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-[#c8ff00]/[0.06] border border-[#c8ff00]/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-9 h-9 rounded-lg bg-[#c8ff00]/6 border border-[#c8ff00]/15 flex items-center justify-center shrink-0 mt-0.5">
                     {icon}
                   </div>
                   <div>
@@ -483,10 +482,10 @@ export default function LandingPage({ user }) {
         {/* HOW IT WORKS */}
         <section
           id="how-it-works"
-          className="py-[120px] px-12 bg-[#0a0a0a] border-t border-b border-[#111]"
+          className="py:10 md:py-30 px-12 bg-[#0a0a0a] border-t border-b border-[#111]"
         >
-          <div className="max-w-[1000px] mx-auto">
-            <div className="text-center mb-[72px]">
+          <div className="max-w-250 mx-auto">
+            <div className="text-center mb-18">
               <div className="font-mono-dm text-[10px] tracking-[3px] uppercase text-[#c8ff00] mb-4">
                 How it works
               </div>
@@ -502,14 +501,14 @@ export default function LandingPage({ user }) {
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1  md:grid-cols-2 gap-8 md:gap-4">
               {steps.map(({ num, title, desc, tag, accent }, i) => (
                 <div
                   key={i}
                   className="step-card p-8 bg-[#0d0d0d] border border-[#1a1a1a] rounded-2xl relative overflow-hidden cursor-default"
                 >
                   <div
-                    className="absolute top-0 left-0 right-0 h-[2px]"
+                    className="absolute top-0 left-0 right-0 h-0.5"
                     style={{
                       background: `linear-gradient(90deg, ${accent}60, ${accent}20, transparent)`,
                     }}
@@ -541,8 +540,8 @@ export default function LandingPage({ user }) {
         </section>
 
         {/* REAL EXAMPLES */}
-        <section id="examples" className="py-[120px] px-12">
-          <div className="max-w-[1000px] mx-auto">
+        <section id="examples" className="py-20 md:py-30 px-12">
+          <div className="max-w-250 mx-auto">
             <div className="text-center mb-16">
               <div className="font-mono-dm text-[10px] tracking-[3px] uppercase text-[#c8ff00] mb-4">
                 Real Examples
@@ -578,18 +577,18 @@ export default function LandingPage({ user }) {
                 ) => (
                   <div
                     key={i}
-                    className={`verdict-card px-8 py-7 bg-[#0d0d0d] border border-[#1a1a1a] rounded-2xl grid grid-cols-[1fr_auto] gap-8 items-start relative overflow-hidden`}
+                    className={`verdict-card px-8 py-7 bg-[#0d0d0d] border border-[#1a1a1a] rounded-2xl grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start relative overflow-hidden`}
                   >
                     <div
-                      className="absolute left-0 top-0 bottom-0 w-[3px]"
+                      className="absolute left-0 top-0 bottom-0 w-0.75"
                       style={{ background: barColor }}
                     />
-                    <div className="pl-2">
+                    <div className="pl-1 md:pl-2">
                       <div
-                        className={`inline-flex items-center gap-[7px] ${bg} border ${border} rounded-md px-[10px] py-1 mb-4`}
+                        className={`inline-flex items-center gap-1.75 ${bg} border ${border} rounded-md px-2.5 py-1 mb-4`}
                       >
                         <span
-                          className={`w-[6px] h-[6px] rounded-full ${dot} inline-block`}
+                          className={`w-1.5 h-1.5 rounded-full ${dot} inline-block`}
                         />
                         <span
                           className={`font-mono-dm text-[10px] ${color} tracking-[1.5px] font-semibold`}
@@ -604,7 +603,7 @@ export default function LandingPage({ user }) {
                         {claim}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-4 items-end flex-shrink-0">
+                    <div className="flex flex-row md:flex-col justify-between md:justify-start w-full md:w-auto gap-4 items-center md:items-end shrink-0 border-t border-[#1a1a1a] md:border-none pt-4 md:pt-0">
                       <div className="text-center">
                         <div
                           className={`text-[28px] font-extrabold ${scoreColor} tracking-[-1px]`}
@@ -653,7 +652,7 @@ export default function LandingPage({ user }) {
         </div>
 
         {/* WHY TRUST US */}
-        <section className="py-[120px] px-12 max-w-[1000px] mx-auto">
+        <section className="py-20 md:py-30 px-12 max-w-250 mx-auto">
           <div className="text-center mb-16">
             <div className="font-mono-dm text-[10px] tracking-[3px] uppercase text-[#c8ff00] mb-4">
               Why trust Veridex
@@ -666,7 +665,7 @@ export default function LandingPage({ user }) {
             </h2>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {trustCards.map(({ icon, title, body }, i) => (
               <div
                 key={i}
@@ -687,9 +686,9 @@ export default function LandingPage({ user }) {
         {/* FAQ */}
         <section
           id="faq"
-          className="py-[120px] px-12 bg-[#0a0a0a] border-t border-[#111]"
+          className="py-10 md:py-30 px-12 bg-[#0a0a0a] border-t border-[#111]"
         >
-          <div className="max-w-[680px] mx-auto">
+          <div className="max-w-170 mx-auto">
             <div className="text-center mb-16">
               <div className="font-mono-dm text-[10px] tracking-[3px] uppercase text-[#c8ff00] mb-4">
                 FAQ
@@ -711,7 +710,7 @@ export default function LandingPage({ user }) {
                     {q}
                   </span>
                   <span
-                    className={`text-[#555] text-xl flex-shrink-0 transition-transform duration-300 ${openFaq === i ? "rotate-45" : "rotate-0"}`}
+                    className={`text-[#555] text-xl shrink-0 transition-transform duration-300 ${openFaq === i ? "rotate-45" : "rotate-0"}`}
                   >
                     +
                   </span>
@@ -727,9 +726,9 @@ export default function LandingPage({ user }) {
         </section>
 
         {/* FINAL CTA */}
-        <section className="py-[140px] px-12 text-center relative overflow-hidden">
+        <section className=" py-15 md:py-35 px-12 text-center relative overflow-hidden">
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] pointer-events-none rounded-full"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  w-full max-w-175  pointer-events-none rounded-full"
             style={{
               background:
                 "radial-gradient(ellipse, rgba(200,255,0,0.05) 0%, transparent 65%)",
@@ -751,7 +750,7 @@ export default function LandingPage({ user }) {
               could be false.
             </span>
           </h2>
-          <p className="text-[17px] text-[#999] max-w-[400px] mx-auto mb-12 leading-[1.7]">
+          <p className="text-[17px] text-[#999] max-w-100 mx-auto mb-12 leading-[1.7]">
             Paste it into Veridex before you share it. Takes 10 seconds. Could
             save you from spreading something untrue.
           </p>
@@ -763,7 +762,7 @@ export default function LandingPage({ user }) {
         </section>
 
         {/* FOOTER */}
-        <footer className="px-12 py-10 border-t border-[#111] flex justify-between items-center">
+        <footer className="px-6 md:px-12 py-10 border-t border-[#111] flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0 text-center md:text-left">
           <div className="text-base font-extrabold">
             Veri<span className="text-[#c8ff00]">dex</span>
           </div>

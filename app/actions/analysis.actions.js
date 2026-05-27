@@ -14,6 +14,23 @@ export const createAnalysis = async ({ article }) => {
     if (!userId) return { error: "Unauthorized" };
     // Step 1: Extract (Returns Array of Strings)
     const claimsArray = await extractClaim(article);
+    console.log("claims", claimsArray);
+    if (!claimsArray || claimsArray.length == 0) {
+      const analysis = await analysisModel.create({
+        userId,
+        article,
+        claim: "No verifiable factual claims detected in this input.",
+        verdict: "unverifiable",
+        score: 0,
+        explanation:
+          "The system determined this submission is a general query or text string rather than a verifiable factual claim. An explainable fact-check requires concrete statements to cross-reference against live web documentation.",
+        resources: [],
+      });
+      return {
+        success: true,
+        analysis: JSON.parse(JSON.stringify(analysis.toObject())),
+      };
+    }
     // Step 2: Search (Returns Array of Objects)
     const evidenceResults = await searchEvidence(claimsArray);
     // Step 3: Analyze (Returns { verdict, score, explanation })
@@ -34,7 +51,8 @@ export const createAnalysis = async ({ article }) => {
       analysis: JSON.parse(JSON.stringify(analysis.toObject())),
     };
   } catch (error) {
-    return { error: "Internal Server Error" };
+    console.error("🚨 PIPELINE CRASHED:", error);
+    return { error: error.message || "Internal Server Error" };
   }
 };
 
