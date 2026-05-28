@@ -1,716 +1,164 @@
-// app/components/AnalysisReportView.jsx
-"use client";
-
-import React from "react";
 import Link from "next/link";
 
 export default function AnalysisReportView({ data }) {
   const record = Array.isArray(data) ? data[0] : data;
 
-  const reportId = record?._id || "UNKNOWN_ID";
-  const articleText = record?.article || "No input text retrieved";
-  const claimText = record?.claim || "No claim extracted";
-  const aiExplanation = record?.explanation || "No explanation generated.";
+  const articleText = record?.article || "No text provided";
+  const claimText = record?.claim || "";
+  const aiExplanation = record?.explanation || "No details available.";
   const verdict = record?.verdict || "unverifiable";
-  const score = typeof record?.score === "number" ? record.score : 0;
 
-  const isUnverifiable = verdict === "unverifiable";
+  // Retaining your premium visual asset parameters adapted for clean hierarchy
+  let badgeText = "Verified True";
+  let accentColor = "text-[#c8ff00]";
+  let badgeStyle = "bg-[#c8ff00]/10 text-[#c8ff00] border-[#c8ff00]/20";
+  let radialGradientClass = "from-[#c8ff00]/5";
+  let headline = "This claim is accurate.";
+  let textBorder = "border-[#c8ff00]/20";
 
-  let heroTitle = "This claim checks out.";
-  let credibility = isUnverifiable
-    ? 0
-    : verdict === "real"
-      ? 100 - score
-      : score;
-  let claimVerifiability = isUnverifiable ? 0 : 100 - score;
-  let evidenceStrength = isUnverifiable ? 0 : credibility;
-
-  let accentColor = "#c8ff00"; 
-  if (isUnverifiable) {
-    accentColor = "#a855f7"; // Cyber Purple for subjective queries
-    heroTitle = "Query Unverifiable";
+  if (verdict === "unverifiable") {
+    badgeText = "Unverified";
+    accentColor = "text-purple-400";
+    badgeStyle = "bg-purple-500/10 text-purple-400 border-purple-500/20";
+    radialGradientClass = "from-purple-500/5";
+    headline = "Not enough evidence to verify.";
+    textBorder = "border-purple-500/20";
   } else if (verdict === "fake") {
-    accentColor = "#ef4444"; 
-    heroTitle = "Flagged as Misinformation.";
+    badgeText = "False Information";
+    accentColor = "text-red-400";
+    badgeStyle = "bg-red-500/10 text-red-400 border-red-500/20";
+    radialGradientClass = "from-red-500/5";
+    headline = "This claim is false or inaccurate.";
+    textBorder = "border-red-500/20";
   } else if (verdict === "misleading") {
-    accentColor = "#f59e0b"; 
-    heroTitle = "Context is Misleading.";
+    badgeText = "Misleading";
+    accentColor = "text-amber-400";
+    badgeStyle = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+    radialGradientClass = "from-amber-500/5";
+    headline = "This lacks critical context.";
+    textBorder = "border-amber-500/20";
   }
 
   const rawResources = record?.resources || [];
-  const normalizedSources = rawResources.map((urlStr) => {
+  const sources = rawResources.map((urlStr) => {
     try {
       const domain = new URL(urlStr).hostname.replace("www.", "");
       return { name: domain, url: urlStr };
     } catch {
-      return { name: "External Reference", url: urlStr };
+      return { name: "View Source", url: urlStr };
     }
   });
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#070709",
-        color: "#f3f4f6",
-        fontFamily: "'Inter', sans-serif",
-        padding: "40px 24px",
-        display: "flex",
-        justifyContent: "center",
-        backgroundImage: `radial-gradient(circle at top right, ${accentColor}08, transparent 40%)`,
-      }}
+      className={`min-h-screen bg-[#070709] text-neutral-200 antialiased px-4 py-12 flex justify-center bg-[radial-gradient(circle_at_top_right,var(--tw-gradient-stops))] ${radialGradientClass} to-transparent to-40%`}
     >
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-        .source-card {
-          text-decoration: none;
-          background: #0e0f12;
-          border: 1px solid rgba(255,255,255,0.04);
-          padding: 20px;
-          border-radius: 16px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          height: 120px;
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-          cursor: pointer;
-        }
-        .source-card:hover {
-          border-color: ${accentColor}4d !important;
-          background: #111317 !important;
-          transform: translateY(-2px);
-        }
-        .back-link {
-          text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          color: #9ca3af;
-          font-size: 13px;
-          font-weight: 600;
-          transition: color 0.2s;
-        }
-        .back-link:hover {
-          color: #fff !important;
-        }
-      `,
-        }}
-      />
-
-      <div style={{ width: "100%", maxWidth: "1200px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "32px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span
-              style={{
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "3px",
-                color: "#666",
-              }}
-            >
-              Report ID
-            </span>
-            <span
-              style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                padding: "4px 10px",
-                borderRadius: "6px",
-                fontSize: "12px",
-                fontFamily: "monospace",
-                color: "#aaa",
-              }}
-            >
-              {reportId}
-            </span>
-          </div>
+      <div className="w-full max-w-3xl flex flex-col gap-8">
+        {/* Back Link */}
+        <div>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-white transition-colors"
+          >
+            ← Back to dashboard
+          </Link>
         </div>
 
-        <div
-          style={{
-            background: "linear-gradient(135deg, #0e0f12 0%, #0a0b0d 100%)",
-            border: "1px solid rgba(255, 255, 255, 0.05)",
-            borderRadius: "24px",
-            padding: "48px",
-            position: "relative",
-            overflow: "hidden",
-            boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
-            marginBottom: "32px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justify_content: "space-between",
-              flexWrap: "wrap",
-              gap: "40px",
-            }}
-          >
-            <div style={{ flex: "1", minWidth: "300px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginBottom: "16px",
-                }}
-              >
-                <span
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    background: accentColor,
-                  }}
-                />
-                <span
-                  style={{
-                    textTransform: "uppercase",
-                    letterSpacing: "2px",
-                    fontSize: "11px",
-                    fontWeight: "700",
-                    color: accentColor,
-                  }}
-                >
-                  {verdict} DATA ENTRY
-                </span>
-              </div>
-              <h1
-                style={{
-                  fontSize: "44px",
-                  fontWeight: "800",
-                  letterSpacing: "-1.5px",
-                  lineHeight: "1.1",
-                  color: "#fff",
-                  margin: "0 0 24px 0",
-                }}
-              >
-                {heroTitle}
-              </h1>
-              <div
-                style={{
-                  background: "rgba(255,255,255,0.02)",
-                  borderLeft: `3px solid ${accentColor}`,
-                  padding: "16px 20px",
-                  borderRadius: "0 12px 12px 0",
-                  maxWidth: "550px",
-                }}
-              >
-                <p
-                  style={{
-                    margin: 0,
-                    fontStyle: "italic",
-                    color: "#9ca3af",
-                    fontSize: "15px",
-                    lineHeight: "1.6",
-                  }}
-                >
-                  "{articleText}"
-                </p>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
-              <div
-                style={{
-                  position: "relative",
-                  width: "160px",
-                  height: "160px",
-                  display: "flex",
-                  alignItems: "center",
-                  justify_content: "center",
-                }}
-              >
-                <svg
-                  width="160"
-                  height="160"
-                  viewBox="0 0 160 160"
-                  style={{ transform: "rotate(-90deg)" }}
-                >
-                  <circle
-                    cx="80"
-                    cy="80"
-                    r="70"
-                    fill="transparent"
-                    stroke="rgba(255,255,255,0.03)"
-                    strokeWidth="8"
-                  />
-                  <circle
-                    cx="80"
-                    cy="80"
-                    r="70"
-                    fill="transparent"
-                    stroke={accentColor}
-                    strokeWidth="8"
-                    strokeDasharray={440}
-                    strokeDashoffset={
-                      isUnverifiable ? 440 : 440 - (440 * credibility) / 100
-                    }
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    textAlign: "center",
-                    left: 0,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: isUnverifiable ? "24px" : "40px",
-                      fontWeight: "800",
-                      color: "#fff",
-                      display: "block",
-                      lineHeight: "1",
-                    }}
-                  >
-                    {isUnverifiable ? "N/A" : `${credibility}%`}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      letterSpacing: "1px",
-                      textTransform: "uppercase",
-                      color: "#6b7280",
-                      display: "block",
-                      marginTop: "4px",
-                    }}
-                  >
-                    {isUnverifiable ? "Non-Claim" : "Credibility"}
-                  </span>
-                </div>
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.05)",
-                    borderRadius: "12px",
-                    padding: "12px 24px",
-                    minWidth: "140px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      textTransform: "uppercase",
-                      color: "#ef4444",
-                      fontWeight: "600",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Engine Score
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                      color: "#f3f4f6",
-                    }}
-                  >
-                    {score}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid rgba(255,255,255,0.05)",
-                    borderRadius: "12px",
-                    padding: "12px 24px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      textTransform: "uppercase",
-                      color: "#3b82f6",
-                      fontWeight: "600",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Sources Loaded
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                      color: "#f3f4f6",
-                    }}
-                  >
-                    {normalizedSources.length} Found
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.4fr 1fr",
-            gap: "32px",
-            marginBottom: "32px",
-          }}
-        >
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "32px" }}
-          >
-            <div
-              style={{
-                background: "#0e0f12",
-                border: "1px solid rgba(255,255,255,0.05)",
-                borderRadius: "20px",
-                padding: "32px",
-              }}
-            >
-              <h3
-                style={{
-                  margin: "0 0 20px 0",
-                  fontSize: "16px",
-                  fontWeight: "700",
-                }}
-              >
-                Engine Synthesis Explanation
-              </h3>
-              <p
-                style={{
-                  margin: 0,
-                  color: "#9ca3af",
-                  fontSize: "15px",
-                  lineHeight: "1.8",
-                }}
-              >
-                {aiExplanation}
-              </p>
-            </div>
-
-            <div
-              style={{
-                background: "#0e0f12",
-                border: "1px solid rgba(255,255,255,0.05)",
-                borderRadius: "20px",
-                padding: "32px",
-              }}
-            >
-              <h4
-                style={{
-                  margin: "0 0 16px 0",
-                  fontSize: "12px",
-                  textTransform: "uppercase",
-                  letterSpacing: "1.5px",
-                  color: "#6b7280",
-                }}
-              >
-                Processed Intent Vector
-              </h4>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "16px",
-                  background: "rgba(255,255,255,0.01)",
-                  border: "1px solid rgba(255,255,255,0.03)",
-                  padding: "16px",
-                  borderRadius: "12px",
-                }}
-              >
-                <div
-                  style={{
-                    background: accentColor,
-                    color: "#000",
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "6px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "11px",
-                    fontWeight: "800",
-                  }}
-                >
-                  i
-                </div>
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#e5e7eb",
-                  }}
-                >
-                  {claimText}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              background: "#0e0f12",
-              border: "1px solid rgba(255,255,255,0.05)",
-              borderRadius: "20px",
-              padding: "32px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
+        {/* Main Status Card */}
+        <div className="bg-gradient-to-br from-[#0e0f12] to-[#0a0b0d] border border-white/[0.05] rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
+          <div className="flex flex-col gap-3">
             <div>
-              <h3
-                style={{
-                  margin: "0 0 24px 0",
-                  fontSize: "16px",
-                  fontWeight: "700",
-                }}
+              <span
+                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${badgeStyle}`}
               >
-                Signal Breakdown
-              </h3>
-
-              <div style={{ marginBottom: "24px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: "13px",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <span style={{ color: "#9ca3af" }}>Falsity Factor</span>
-                  <span style={{ color: "#ef4444", fontWeight: "600" }}>
-                    {score}%
-                  </span>
-                </div>
-                <div
-                  style={{
-                    height: "6px",
-                    background: "rgba(255,255,255,0.03)",
-                    borderRadius: "10px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "100%",
-                      width: `${score}%`,
-                      background: "#ef4444",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ marginBottom: "24px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: "13px",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <span style={{ color: "#9ca3af" }}>Claim Verifiability</span>
-                  <span style={{ color: "#f59e0b", fontWeight: "600" }}>
-                    {claimVerifiability}%
-                  </span>
-                </div>
-                <div
-                  style={{
-                    height: "6px",
-                    background: "rgba(255,255,255,0.03)",
-                    borderRadius: "10px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "100%",
-                      width: `${claimVerifiability}%`,
-                      background: "#f59e0b",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div style={{ marginBottom: "24px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: "13px",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <span style={{ color: "#9ca3af" }}>
-                    Evidence Cross-Reference Strength
-                  </span>
-                  <span style={{ color: accentColor, fontWeight: "600" }}>
-                    {evidenceStrength}%
-                  </span>
-                </div>
-                <div
-                  style={{
-                    height: "6px",
-                    background: "rgba(255,255,255,0.03)",
-                    borderRadius: "10px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "100%",
-                      width: `${evidenceStrength}%`,
-                      background: accentColor,
-                    }}
-                  />
-                </div>
-              </div>
+                {badgeText}
+              </span>
             </div>
 
-            <div
-              style={{
-                background: "rgba(255,255,255,0.01)",
-                border: `1px dashed ${accentColor}33`,
-                padding: "16px",
-                borderRadius: "12px",
-                fontSize: "12px",
-                color: "#777",
-                lineHeight: "1.5",
-              }}
-            >
-              💡{" "}
-              {isUnverifiable
-                ? "Systems bypass automated web scraper tracking when input string contains conversational text parameters rather than factual claims."
-                : "Engine matrices note historical cross-referenced consensus maps matching primary directional thesis vectors."}
-            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              {headline}
+            </h1>
           </div>
+
+          {/* User's Original Input */}
+          <div
+            className={`bg-white/[0.01] border-l-2 ${textBorder} p-4 rounded-r-xl`}
+          >
+            <span className="block text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-1 font-mono">
+              Checked Content
+            </span>
+            <p className="text-neutral-400 text-sm md:text-base italic leading-relaxed">
+              "{articleText}"
+            </p>
+          </div>
+
+          {/* Core assessment write-up for consumer comprehension */}
+          <div className="space-y-3 pt-2">
+            <h2 className="text-base font-bold uppercase tracking-wider font-mono text-neutral-300">
+              Our Assessment
+            </h2>
+            <p className="text-neutral-300 text-sm md:text-base leading-relaxed font-normal">
+              {aiExplanation}
+            </p>
+          </div>
+
+          {/* Implicitly showing isolated clean claim string if database populated it differently */}
+          {claimText && claimText !== articleText && (
+            <div className="text-xs text-neutral-500 pt-4 border-t border-white/[0.05]">
+              <span className="font-mono uppercase text-neutral-600 font-bold mr-1">
+                Isolated Statement:
+              </span>{" "}
+              {claimText}
+            </div>
+          )}
         </div>
 
-        <div style={{ marginBottom: "48px" }}>
-          <h3
-            style={{
-              fontSize: "14px",
-              textTransform: "uppercase",
-              letterSpacing: "2px",
-              color: "#6b7280",
-              marginBottom: "16px",
-              fontWeight: "700",
-            }}
-          >
-            Retrieved Live Verification Sources
+        {/* Sources Grid */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-neutral-500 font-mono">
+            Supporting Sources & References
           </h3>
-          {normalizedSources.length > 0 ? (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: "16px",
-              }}
-            >
-              {normalizedSources.map((src, idx) => (
+
+          {sources.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {sources.map((src, idx) => (
                 <a
                   href={src.url}
                   key={idx}
                   target="_blank"
                   rel="noreferrer"
-                  className="source-card"
+                  className={`group flex items-center justify-between p-4 bg-[#0e0f12] border border-white/[0.04] rounded-xl transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#111317] ${
+                    verdict === "unverifiable"
+                      ? "hover:border-purple-500/30"
+                      : verdict === "fake"
+                        ? "hover:border-red-500/30"
+                        : verdict === "misleading"
+                          ? "hover:border-amber-500/30"
+                          : "hover:border-[#c8ff00]/30"
+                  }`}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        color: "#fff",
-                      }}
-                    >
+                  <div className="flex flex-col min-w-0 pr-2">
+                    <span className="text-sm font-bold text-neutral-200 truncate group-hover:text-white transition-colors">
                       {src.name}
                     </span>
-                    <span style={{ color: accentColor, fontSize: "12px" }}>
-                      ↗
+                    <span className="text-[11px] text-neutral-600 font-mono truncate max-w-[220px] group-hover:text-neutral-500 transition-colors">
+                      {src.url}
                     </span>
                   </div>
                   <span
-                    style={{
-                      fontSize: "11px",
-                      color: "#4b5563",
-                      wordBreak: "break-all",
-                      display: "-webkit-box",
-                      WebkitLineClamp: "2",
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
+                    className={`text-sm shrink-0 transition-colors ${accentColor}`}
                   >
-                    {src.url}
+                    ↗
                   </span>
                 </a>
               ))}
             </div>
           ) : (
-            <div
-              style={{
-                background: "#0e0f12",
-                border: "1px dashed rgba(255,255,255,0.05)",
-                borderRadius: "16px",
-                padding: "40px",
-                textAlign: "center",
-                color: "#6b7280",
-                fontSize: "14px",
-              }}
-            >
-              No external citation sources were requested or compiled for this
-              transaction record.
+            <div className="bg-[#0e0f12] border border-dashed border-white/[0.05] rounded-xl py-8 px-4 text-center text-xs text-neutral-500">
+              No direct citation sources were tracked for this verification
+              record.
             </div>
           )}
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingTop: "24px",
-            borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-          }}
-        >
-          <Link href="/dashboard" className="back-link">
-            ← Back to Dashboard
-          </Link>
-          <span
-            style={{
-              fontSize: "10px",
-              color: "#555",
-              letterSpacing: "2px",
-              textTransform: "uppercase",
-              fontWeight: "700",
-            }}
-          >
-            Veridex RAG Engine v2.0
-          </span>
         </div>
       </div>
     </div>

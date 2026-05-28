@@ -200,28 +200,28 @@ export default function AnalyzePage() {
 
       <div className="font-syne bg-[#080808] min-h-screen text-[#f0ede8] overflow-x-hidden">
         {/* NAV */}
-        <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-10 py-5 border-b border-white/[0.04] backdrop-blur-xl bg-[#080808]/80">
+        <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-10 py-4 border-b border-white/4 backdrop-blur-xl bg-[#080808]/80">
           <a href="/" className="no-underline text-[#f0ede8]">
-            <span className="text-[18px] font-extrabold tracking-tight">
+            <span className="text-base md:text-[18px] font-extrabold tracking-tight">
               Veri<span className="text-[#c8ff00]">dex</span>
             </span>
           </a>
-          <div className="flex items-center ">
-            <a href="/dashboard">
-              <button className="bg-[#c8ff00] text-[#080808] font-bold text-sm px-[22px] py-[10px] rounded-lg tracking-wide cursor-pointer border-none hover:brightness-110 transition-all">
-                DashBoard →
-              </button>
-            </a>
-            <div className="font-mono-dm text-sm text-zinc-400 border border-[#1e1e1e] px-3 py-1 rounded-full tracking-widest uppercase">
+          <div className="flex items-center gap-3 md:gap-4 ">
+            <div className="hidden sm:block font-mono text-[11px] md:text-[12px] text-zinc-400 border border-[#1e1e1e] px-3 py-1.5 rounded-full tracking-widest uppercase">
               RAG · AI · Real-time
             </div>
+            <a href="/dashboard">
+              <button className="bg-[#c8ff00] text-[#080808] font-bold text-xs md:text-sm px-4 py-2 md:px-5 md:py-2.5 rounded-lg tracking-wide cursor-pointer border-none hover:brightness-110 transition-all">
+                Dashboard →
+              </button>
+            </a>
           </div>
         </nav>
 
         {/* ══════════ INPUT ══════════ */}
         {view === "input" && (
           <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16">
-            <div className="text-center mb-10 w-full max-w-[680px]">
+            <div className="text-center mb-10 w-full max-w-2xl mx-auto">
               <div className="font-mono-dm text-sm tracking-[3px] uppercase mb-4 flex items-center justify-center gap-3 text-[#c8ff00]">
                 <span className="w-8 h-px bg-[#c8ff00] opacity-40 inline-block" />
                 Fact Verification
@@ -236,7 +236,7 @@ export default function AnalyzePage() {
               </p>
             </div>
 
-            <div className="w-full max-w-[740px]">
+            <div className="w-full max-w-185">
               <div className="rounded-2xl p-5 bg-[#0f0f0f] border border-[#222] transition-colors duration-300">
                 <div className="font-mono-dm text-sm tracking-[2px] uppercase mb-4 flex items-center gap-2 text-zinc-400">
                   <span
@@ -253,7 +253,7 @@ export default function AnalyzePage() {
                   className="w-full bg-transparent border-none outline-none text-[#f0ede8] text-[15px] leading-[1.75] resize-none"
                   style={{ fontFamily: "inherit" }}
                 />
-                <div className="flex justify-between items-center mt-4 pt-4 border-t border-[#1a1a1a]">
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center mt-4 pt-4 border-t border-[#1a1a1a]">
                   <div className="flex items-center gap-3">
                     <span className="font-mono-dm text-[11px] text-[#444]">
                       {article.length} characters
@@ -271,14 +271,14 @@ export default function AnalyzePage() {
                   </div>
                   <button
                     onClick={startAnalysis}
-                    className="font-syne font-bold text-[14px] bg-[#c8ff00] text-[#080808] border-none px-7 py-3 rounded-xl cursor-pointer hover:brightness-110 transition-all"
+                    className="font-syne font-bold text-[14px] bg-[#c8ff00] text-[#080808] border-none px-7 py-3.5 rounded-xl cursor-pointer hover:brightness-110 transition-all w-full sm:w-auto text-center"
                   >
                     Analyze →
                   </button>
                 </div>
               </div>
 
-              <div className="flex mt-6 rounded-xl overflow-hidden border border-[#1a1a1a]">
+              <div className="grid grid-cols-1 sm:grid-cols-3 mt-6 rounded-xl overflow-hidden border border-[#1a1a1a]">
                 {[
                   { num: "3", label: "AI Pipeline Steps", icon: "⚡" },
                   { num: "15+", label: "Live Sources Checked", icon: "🌐" },
@@ -286,7 +286,7 @@ export default function AnalyzePage() {
                 ].map(({ num, label, icon }, i) => (
                   <div
                     key={i}
-                    className={`flex-1 py-5 px-4 text-center bg-[#0d0d0d] ${i < 2 ? "border-r border-[#1a1a1a]" : ""}`}
+                    className={`py-5 px-4 text-center bg-[#0d0d0d] ${i < 2 ? "border-b sm:border-b-0 sm:border-r border-[#1a1a1a]" : ""}`}
                   >
                     <div className="text-[13px] mb-1 text-[#555]">{icon}</div>
                     <div className="text-[24px] font-extrabold tracking-[-1px] text-[#f0ede8]">
@@ -325,11 +325,11 @@ export default function AnalyzePage() {
                 desc: "AI compares extracted claims against retrieved evidence to determine credibility",
               },
             ].map(({ n, title, desc }) => {
-              const s = steps[n];
+              const s = steps[n - 1];
               return (
                 <div
                   key={n}
-                  className="flex items-center gap-5 px-5 py-5 rounded-xl mb-3 transition-all duration-500"
+                  className="flex items-start sm:items-center gap-4 sm:gap-5 px-4 sm:px-5 py-5 rounded-xl mb-3 transition-all duration-500"
                   style={{
                     border: `1px solid ${s === "active" ? "rgba(200,255,0,0.18)" : s === "done" ? "#1e1e1e" : "transparent"}`,
                     background:
@@ -414,10 +414,9 @@ export default function AnalyzePage() {
           </div>
         )}
 
-        {/* ══════════ RESULT — GOD LEVEL ══════════ */}
+        {/* ══════════ RESULT══════════ */}
         {view === "result" && result && vc && (
-          <div className="px-6 pt-24 pb-24 max-w-[940px] mx-auto">
-            {/* ── 1. VERDICT BANNER — first thing user sees ── */}
+          <div className="px-4 sm:px-6 pt-24 pb-24 max-w-235 mx-auto">
             <div
               className="result-card relative rounded-3xl overflow-hidden mb-4"
               style={{
@@ -425,7 +424,6 @@ export default function AnalyzePage() {
                 border: `1px solid ${vc.border}`,
               }}
             >
-              {/* top glow line */}
               <div
                 className="absolute top-0 left-0 right-0 h-[3px]"
                 style={{
@@ -445,9 +443,8 @@ export default function AnalyzePage() {
                 }}
               />
 
-              <div className="p-8 pb-10">
-                {/* top row — verdict badge + source count */}
-                <div className="flex items-center justify-between mb-8">
+              <div className="p-6 sm:p-8 pb-10">
+                <div className="mb-8">
                   <div
                     className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full"
                     style={{
@@ -456,20 +453,20 @@ export default function AnalyzePage() {
                     }}
                   >
                     <span
-                      className="w-2.5 h-2.5 rounded-full inline-block"
+                      className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
                       style={{
                         background: vc.color,
                         boxShadow: `0 0 10px ${vc.color}`,
                       }}
                     />
                     <span
-                      className="font-extrabold tracking-[3px] uppercase text-[13px]"
+                      className="font-extrabold tracking-[3px] uppercase text-[12px] sm:text-[13px]"
                       style={{ color: vc.color }}
                     >
                       {vc.label}
                     </span>
                   </div>
-                  <div className="font-mono-dm text-[12px] text-[#555]">
+                  <div className="font-mono-dm text-[12px] text-[#555] mt-4">
                     {result.resources?.length || 0} sources analyzed ·{" "}
                     {new Date().toLocaleDateString("en-IN", {
                       day: "numeric",
@@ -479,20 +476,18 @@ export default function AnalyzePage() {
                   </div>
                 </div>
 
-                {/* main content row */}
-                <div className="flex items-center gap-10">
-                  {/* credibility score — BIG and clear */}
-                  <div className="flex flex-col items-center flex-shrink-0">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-10">
+                  <div className="flex flex-col items-center shrink-0">
                     <div
                       className="relative"
-                      style={{ width: 180, height: 180 }}
+                      style={{ width: 160, height: 160 }}
                     >
                       <svg
                         className="absolute inset-0"
                         style={{ transform: "rotate(-90deg)" }}
                         viewBox="0 0 130 130"
-                        width="180"
-                        height="180"
+                        width="100%"
+                        height="100%"
                       >
                         <circle
                           fill="none"
@@ -523,20 +518,20 @@ export default function AnalyzePage() {
                         <div
                           className="font-extrabold leading-none"
                           style={{
-                            fontSize: 52,
-                            letterSpacing: -3,
+                            fontSize: 48,
+                            letterSpacing: -2,
                             color: vc.color,
                           }}
                         >
                           {scoreDisplay}
                         </div>
-                        <div className="font-mono-dm text-[11px] tracking-widest uppercase mt-2 text-[#555]">
+                        <div className="font-mono-dm text-[10px] sm:text-[11px] tracking-widest uppercase mt-2 text-[#555]">
                           / 100
                         </div>
                       </div>
                     </div>
                     <div
-                      className="font-mono-dm text-[11px] tracking-[2px] uppercase mt-3"
+                      className="font-mono-dm text-[10px] sm:text-[11px] tracking-[2px] uppercase mt-3"
                       style={{ color: "#666" }}
                     >
                       Credibility Score
@@ -544,11 +539,11 @@ export default function AnalyzePage() {
                   </div>
 
                   {/* verdict headline + context */}
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 w-full">
                     <h1
-                      className="font-extrabold leading-[1.05] mb-5"
+                      className="font-extrabold leading-[1.05] mb-5 text-center md:text-left"
                       style={{
-                        fontSize: "clamp(28px, 4vw, 42px)",
+                        fontSize: "clamp(24px, 4vw, 42px)",
                         letterSpacing: -1.5,
                         color: "#f0ede8",
                       }}
@@ -556,7 +551,6 @@ export default function AnalyzePage() {
                       {vc.headline}
                     </h1>
 
-                    {/* what the score means */}
                     <div
                       className="flex items-start gap-3 p-4 rounded-2xl mb-5"
                       style={{
@@ -565,7 +559,7 @@ export default function AnalyzePage() {
                       }}
                     >
                       <div
-                        className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
+                        className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5"
                         style={{
                           background: vc.bg,
                           border: `1px solid ${vc.border}`,
@@ -600,7 +594,7 @@ export default function AnalyzePage() {
 
                     {/* article preview */}
                     <div
-                      className="font-mono-dm text-[12px] leading-[1.7] p-4 rounded-xl"
+                      className="font-mono-dm text-[12px] leading-[1.7] p-4 rounded-xl break-words"
                       style={{
                         color: "#888",
                         background: "#111",
@@ -618,11 +612,10 @@ export default function AnalyzePage() {
               </div>
             </div>
 
-            {/* ── 2. AI EXPLANATION — most valuable content ── */}
-            <div className="result-card rounded-2xl p-7 mb-4 bg-[#0c0c0c] border border-[#1e1e1e]">
+            <div className="result-card rounded-2xl p-5 sm:p-7 mb-4 bg-[#0c0c0c] border border-[#1e1e1e]">
               <div className="flex items-center gap-3 mb-6">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
+                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
                   style={{
                     background: "rgba(200,255,0,0.06)",
                     border: "1px solid rgba(200,255,0,0.12)",
@@ -650,17 +643,17 @@ export default function AnalyzePage() {
                   </div>
                 </div>
               </div>
-              <p className="text-[16px] leading-[1.9] text-[#e0e0e0] font-[400]">
+              <p className="text-[15px] sm:text-[16px] leading-[1.9] text-[#e0e0e0] font-[400]">
                 {result.explanation}
               </p>
             </div>
 
             {/* ── 3. CLAIMS + SCORES ── */}
             {claims.length > 0 && (
-              <div className="result-card rounded-2xl p-7 mb-4 bg-[#0c0c0c] border border-[#1e1e1e]">
+              <div className="result-card rounded-2xl p-5 sm:p-7 mb-4 bg-[#0c0c0c] border border-[#1e1e1e]">
                 <div className="flex items-center gap-3 mb-6">
                   <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center"
+                    className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
                     style={{
                       background: "rgba(200,255,0,0.06)",
                       border: "1px solid rgba(200,255,0,0.12)",
@@ -699,7 +692,7 @@ export default function AnalyzePage() {
                       }}
                     >
                       <div
-                        className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center font-mono-dm text-[11px] font-bold"
+                        className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center font-mono-dm text-[11px] font-bold"
                         style={{
                           background: "rgba(200,255,0,0.08)",
                           border: "1px solid rgba(200,255,0,0.12)",
@@ -709,12 +702,12 @@ export default function AnalyzePage() {
                         {String(i + 1).padStart(2, "0")}
                       </div>
                       <div className="flex-1">
-                        <p className="text-[14px] text-[#ddd] leading-[1.65]">
+                        <p className="text-[13px] sm:text-[14px] text-[#ddd] leading-[1.65]">
                           {c.trim()}
                         </p>
                       </div>
                       <div
-                        className="flex-shrink-0 px-2 py-1 rounded-lg font-mono-dm text-sm font-bold tracking-wide"
+                        className="shrink-0 px-2 py-1 rounded-lg font-mono-dm text-[12px] sm:text-sm font-bold tracking-wide mt-0.5"
                         style={{
                           background: vc.bg,
                           border: `1px solid ${vc.border}`,
@@ -730,10 +723,10 @@ export default function AnalyzePage() {
             )}
 
             {/* ── 4. CONFIDENCE BARS ── */}
-            <div className="result-card rounded-2xl p-7 mb-4 bg-[#0c0c0c] border border-[#1e1e1e]">
+            <div className="result-card rounded-2xl p-5 sm:p-7 mb-4 bg-[#0c0c0c] border border-[#1e1e1e]">
               <div className="flex items-center gap-3 mb-6">
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
+                  className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
                   style={{
                     background: "rgba(200,255,0,0.06)",
                     border: "1px solid rgba(200,255,0,0.12)",
@@ -760,7 +753,7 @@ export default function AnalyzePage() {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[
                   {
                     label: "Fake probability",
@@ -788,17 +781,17 @@ export default function AnalyzePage() {
                   },
                 ].map(({ label, value, color, desc }) => (
                   <div key={label}>
-                    <div className="flex items-end justify-between mb-2">
-                      <div>
-                        <div className="font-mono-dm text-base text-zinc-200 font-medium">
+                    <div className="flex items-end justify-between mb-2 gap-2">
+                      <div className="min-w-0">
+                        <div className="font-mono-dm text-[15px] sm:text-base text-zinc-200 font-medium truncate">
                           {label}
                         </div>
-                        <div className="font-mono-dm text-sm text-zinc-400 mt-0.5">
+                        <div className="font-mono-dm text-[12px] sm:text-sm text-zinc-400 mt-0.5 truncate">
                           {desc}
                         </div>
                       </div>
                       <div
-                        className="font-extrabold text-[22px] tracking-[-1px] leading-none ml-3"
+                        className="font-extrabold text-[20px] sm:text-[22px] tracking-[-1px] leading-none flex-shrink-0"
                         style={{ color }}
                       >
                         {value}
@@ -807,7 +800,7 @@ export default function AnalyzePage() {
                         </span>
                       </div>
                     </div>
-                    <div className="rounded-full overflow-hidden h-[6px] bg-[#1a1a1a]">
+                    <div className="rounded-full overflow-hidden h-1.5 bg-[#1a1a1a]">
                       <div
                         className="rounded-full h-full transition-all duration-1500"
                         style={{
@@ -824,10 +817,10 @@ export default function AnalyzePage() {
 
             {/* ── 5. SOURCES ── */}
             {result.resources?.length > 0 && (
-              <div className="result-card rounded-2xl p-7 mb-6 bg-[#0c0c0c] border border-[#1e1e1e]">
+              <div className="result-card rounded-2xl p-5 sm:p-7 mb-6 bg-[#0c0c0c] border border-[#1e1e1e]">
                 <div className="flex items-center gap-3 mb-6">
                   <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center"
+                    className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
                     style={{
                       background: "rgba(200,255,0,0.06)",
                       border: "1px solid rgba(200,255,0,0.12)",
@@ -856,8 +849,8 @@ export default function AnalyzePage() {
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {result.resources.slice(0, 8).map((url, i) => {
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {result.resources?.slice(0, 8).map((url, i) => {
                     let domain = url;
                     try {
                       domain = new URL(url).hostname.replace("www.", "");
@@ -868,11 +861,11 @@ export default function AnalyzePage() {
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="src flex items-center gap-3 p-4 rounded-xl no-underline bg-[#111] border border-[#1a1a1a]"
+                        className="src flex items-center gap-3 p-3 sm:p-4 rounded-xl no-underline bg-[#111] border border-[#1a1a1a] hover:bg-[#151515] transition-colors"
                       >
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#181818] border border-[#242424] flex-shrink-0">
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#181818] border border-[#242424] shrink-0">
                           <span
-                            className="w-[6px] h-[6px] rounded-full inline-block"
+                            className="w-1.5 h-1.5 rounded-full inline-block"
                             style={{
                               background: vc.color,
                               boxShadow: `0 0 6px ${vc.color}`,
@@ -880,14 +873,14 @@ export default function AnalyzePage() {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-mono-dm text-base text-zinc-200 font-medium">
+                          <div className="font-mono-dm text-[14px] sm:text-base text-zinc-200 font-medium truncate">
                             {domain}
                           </div>
-                          <div className="font-mono-dm text-sm text-zinc-400 overflow-hidden text-ellipsis whitespace-nowrap mt-0.5">
+                          <div className="font-mono-dm text-[12px] sm:text-sm text-zinc-400 truncate mt-0.5">
                             {url}
                           </div>
                         </div>
-                        <span className="font-mono-dm text-[13px] text-[#555] flex-shrink-0">
+                        <span className="font-mono-dm text-[13px] text-[#555] shrink-0">
                           ↗
                         </span>
                       </a>
@@ -898,10 +891,10 @@ export default function AnalyzePage() {
             )}
 
             {/* ── ACTIONS ── */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between sm:justify-start gap-4">
               <button
                 onClick={reset}
-                className="font-syne font-semibold text-[14px] flex items-center gap-2 bg-[#c8ff00] text-[#080808] border-none px-7 py-3 rounded-xl cursor-pointer hover:brightness-110 transition-all"
+                className="w-full sm:w-auto font-syne font-semibold text-[14px] flex justify-center items-center gap-2 bg-[#c8ff00] text-[#080808] border-none px-7 py-3 rounded-xl cursor-pointer hover:brightness-110 transition-all"
               >
                 ↺ Analyze another
               </button>

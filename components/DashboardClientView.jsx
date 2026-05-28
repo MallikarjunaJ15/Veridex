@@ -27,7 +27,7 @@ const verdictConfig = {
 export default function DashboardClientView({ user, analysis = [] }) {
   const [activeTab, setActiveTab] = useState("analysis");
   const [loggingOut, setLoggingOut] = useState(false);
-
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleLogout = async () => {
     setLoggingOut(true);
     await logoutUser();
@@ -114,18 +114,74 @@ export default function DashboardClientView({ user, analysis = [] }) {
       `}</style>
 
       <div
-        className="fs min-h-screen bg-[#080808] flex text-[#f0ede8]"
+        className="fs min-h-screen bg-[#080808] flex flex-col md:flex-row text-[#f0ede8]"
         style={{ fontFamily: "'Syne',sans-serif" }}
       >
-        {/*SIDEBAR */}
+        <div
+          className="flex md:hidden items-center justify-between p-4 sticky top-0 z-40"
+          style={{ background: "#090909", borderBottom: "1px solid #141414" }}
+        >
+          <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <div
+              className="font-extrabold tracking-tight"
+              style={{ fontSize: 20, color: "#f0ede8" }}
+            >
+              Veri<span style={{ color: "#c8ff00" }}>dex</span>
+            </div>
+          </a>
+
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 rounded-xl focus:outline-none transition-colors"
+            style={{
+              color: "#f0ede8",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {/* Hamburger / Close Icon Switch */}
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              {isMobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* 2. BACKGROUND BACKDROP OVERLAY (Dim background when mobile menu is open) */}
+        {isMobileMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+
+        {/* 3. SIDEBAR DRAWER COMPONENT */}
         <aside
-          className="w-[240px] flex-shrink-0 flex flex-col justify-between relative"
+          className={`fixed md:sticky top-0 bottom-0 left-0 h-screen w-60 shrink-0 flex flex-col justify-between z-50 md:z-10 transition-transform duration-300 ease-in-out md:translate-x-0 ${
+            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
           style={{
             background: "#090909",
             borderRight: "1px solid #141414",
-            position: "sticky",
-            top: 0,
-            height: "100vh",
           }}
         >
           <div
@@ -164,6 +220,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
               </div>
             </div>
 
+            {/* User Badge Container */}
             <div
               style={{
                 padding: "16px 16px 12px",
@@ -201,7 +258,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
               </div>
             </div>
 
-            {/* nav */}
+            {/* Navigation */}
             <div style={{ padding: "12px 12px 0" }}>
               <div
                 className="fm mb-3"
@@ -218,7 +275,10 @@ export default function DashboardClientView({ user, analysis = [] }) {
               {navItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    setIsMobileMenuOpen(false);
+                  }}
                   className={`nav-btn w-full flex items-center gap-3 rounded-xl mb-1 ${activeTab === item.id ? "active" : ""}`}
                   style={{
                     padding: "10px 12px",
@@ -259,6 +319,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
                 </button>
               ))}
 
+              {/* New Analysis Action Button */}
               <a
                 href="/analyze"
                 style={{
@@ -295,6 +356,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
             </div>
           </div>
 
+          {/* Sign Out Section Footer */}
           <div
             className="relative z-10"
             style={{
@@ -373,15 +435,15 @@ export default function DashboardClientView({ user, analysis = [] }) {
 
         {/*MAIN CONTENT  */}
         <main
-          className="flex-1 overflow-y-auto"
+          className="flex-1 w-full min-w-0 p-6 md:p-10"
           style={{ background: "#080808" }}
         >
           {activeTab === "analysis" && (
             <div
-              className="fade-in"
-              style={{ padding: "48px 48px", maxWidth: 900, margin: "0 auto" }}
+              className="fade-in px-4 py-6 md:p-12"
+              style={{ maxWidth: 900, margin: "0 auto" }}
             >
-              <div className="flex items-start justify-between mb-10">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
                 <div>
                   <div
                     className="fm mb-2"
@@ -395,9 +457,8 @@ export default function DashboardClientView({ user, analysis = [] }) {
                     — Analysis History
                   </div>
                   <h1
-                    className="font-extrabold tracking-tight"
+                    className="font-extrabold tracking-tight text-2xl md:text-3xl"
                     style={{
-                      fontSize: 32,
                       letterSpacing: -1.5,
                       color: "#f0ede8",
                     }}
@@ -409,9 +470,14 @@ export default function DashboardClientView({ user, analysis = [] }) {
                     evidence.
                   </p>
                 </div>
-                <a href="/analyze" style={{ textDecoration: "none" }}>
+
+                <a
+                  href="/analyze"
+                  className="w-full md:w-auto"
+                  style={{ textDecoration: "none" }}
+                >
                   <button
-                    className="fs font-bold flex items-center gap-2 transition-all"
+                    className="fs font-bold flex items-center justify-center gap-2 transition-all w-full md:w-auto"
                     style={{
                       background: "#c8ff00",
                       color: "#080808",
@@ -447,7 +513,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
               </div>
 
               {totalScans > 0 && (
-                <div className="grid grid-cols-4 gap-3 mb-10">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-10">
                   {[
                     {
                       label: "Total Scans",
@@ -476,11 +542,10 @@ export default function DashboardClientView({ user, analysis = [] }) {
                   ].map(({ label, value, color, sub }) => (
                     <div
                       key={label}
-                      className="rounded-2xl"
+                      className="rounded-2xl p-4 md:p-5"
                       style={{
                         background: "#0d0d0d",
                         border: "1px solid #161616",
-                        padding: "20px 20px",
                       }}
                     >
                       <div
@@ -513,9 +578,10 @@ export default function DashboardClientView({ user, analysis = [] }) {
 
               {analysis.length === 0 ? (
                 <div
-                  className="flex flex-col items-center justify-center rounded-3xl"
+                  className="flex flex-col items-center justify-center rounded-3xl text-center px-4"
                   style={{
-                    padding: "80px 40px",
+                    paddingTop: 80,
+                    paddingBottom: 80,
                     background: "#0d0d0d",
                     border: "1px dashed #1e1e1e",
                   }}
@@ -552,7 +618,6 @@ export default function DashboardClientView({ user, analysis = [] }) {
                       fontSize: 14,
                       color: "#555",
                       marginBottom: 24,
-                      textAlign: "center",
                       maxWidth: 320,
                     }}
                   >
@@ -577,9 +642,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
                   </a>
                 </div>
               ) : (
-                <div
-                  style={{ display: "flex", flexDirection: "column", gap: 12 }}
-                >
+                <div className="flex flex-col gap-3">
                   {analysis.map((item, i) => {
                     const vc =
                       verdictConfig[item.verdict] || verdictConfig.misleading;
@@ -598,11 +661,10 @@ export default function DashboardClientView({ user, analysis = [] }) {
                         style={{ textDecoration: "none" }}
                       >
                         <div
-                          className="analysis-card rounded-2xl transition-all duration-200 relative overflow-hidden"
+                          className="analysis-card rounded-2xl transition-all duration-200 relative overflow-hidden p-4 md:p-6"
                           style={{
                             background: "#0d0d0d",
                             border: "1px solid #161616",
-                            padding: "24px 24px",
                             cursor: "pointer",
                           }}
                           onMouseEnter={(e) => {
@@ -626,9 +688,9 @@ export default function DashboardClientView({ user, analysis = [] }) {
                             }}
                           />
 
-                          <div style={{ paddingLeft: 16 }}>
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center gap-3">
+                          <div className="pl-2 md:pl-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                              <div className="flex flex-wrap items-center gap-2">
                                 <div
                                   className="fm flex items-center gap-2 rounded-lg"
                                   style={{
@@ -667,7 +729,9 @@ export default function DashboardClientView({ user, analysis = [] }) {
                                   Score {item.score ?? "—"}
                                 </div>
                               </div>
-                              <div className="flex items-center gap-3">
+
+                              {/* Date and actions container */}
+                              <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto border-t border-[#141414] sm:border-none pt-2 sm:pt-0">
                                 <span
                                   className="fm"
                                   style={{ fontSize: 11, color: "#555" }}
@@ -684,9 +748,8 @@ export default function DashboardClientView({ user, analysis = [] }) {
                             </div>
 
                             <p
-                              className="font-medium mb-3"
+                              className="font-medium mb-3 text-sm"
                               style={{
-                                fontSize: 14,
                                 color: "#ccc",
                                 lineHeight: 1.6,
                               }}
@@ -701,7 +764,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
                                 {claims.slice(0, 2).map((c, ci) => (
                                   <div
                                     key={ci}
-                                    className="flex items-center gap-2 rounded-lg"
+                                    className="flex items-center gap-2 rounded-lg max-w-full"
                                     style={{
                                       background: "#111",
                                       border: "1px solid #1e1e1e",
@@ -709,7 +772,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
                                     }}
                                   >
                                     <span
-                                      className="fm font-bold"
+                                      className="fm font-bold shrink-0"
                                       style={{
                                         fontSize: 9,
                                         color: "#c8ff00",
@@ -719,17 +782,16 @@ export default function DashboardClientView({ user, analysis = [] }) {
                                       0{ci + 1}
                                     </span>
                                     <span
-                                      className="fm"
+                                      className="fm truncate"
                                       style={{ fontSize: 11, color: "#888" }}
                                     >
-                                      {c.trim().slice(0, 55)}
-                                      {c.trim().length > 55 ? "..." : ""}
+                                      {c.trim()}
                                     </span>
                                   </div>
                                 ))}
                                 {claims.length > 2 && (
                                   <div
-                                    className="fm"
+                                    className="fm shrink-0"
                                     style={{
                                       fontSize: 11,
                                       color: "#444",
@@ -773,18 +835,18 @@ export default function DashboardClientView({ user, analysis = [] }) {
             </div>
           )}
 
-          {/*  PROFILE   */}
           {activeTab === "profile" && (
             <div
               className="fade-in"
-              style={{ padding: "48px 48px", maxWidth: 900, margin: "0 auto" }}
+              style={{ padding: "48px 24px", maxWidth: 900, margin: "0 auto" }}
             >
-              <div className="mb-10">
+              {/* Header Section */}
+              <div className="mb-6 md:mb-10">
                 <div
                   className="fm mb-2"
                   style={{
                     fontSize: 10,
-                    color: "#444",
+                    color: "#555",
                     letterSpacing: 2,
                     textTransform: "uppercase",
                   }}
@@ -801,19 +863,21 @@ export default function DashboardClientView({ user, analysis = [] }) {
                 >
                   Profile
                 </h1>
-                <p style={{ fontSize: 14, color: "#666", marginTop: 6 }}>
+                <p style={{ fontSize: 14, color: "#888", marginTop: 6 }}>
                   Your Veridex account details and activity summary.
                 </p>
               </div>
 
+              {/* Premium Profile Hero Card */}
               <div
-                className="rounded-3xl relative overflow-hidden mb-5"
+                className="rounded-3xl relative overflow-hidden mb-6"
                 style={{
                   background: "#0d0d0d",
                   border: "1px solid #1e1e1e",
-                  padding: "40px 40px",
+                  padding: "40px",
                 }}
               >
+                {/* Ambient Neon Top-Right Glow */}
                 <div
                   style={{
                     position: "absolute",
@@ -823,18 +887,19 @@ export default function DashboardClientView({ user, analysis = [] }) {
                     height: 400,
                     borderRadius: "50%",
                     background:
-                      "radial-gradient(circle,rgba(200,255,0,0.04) 0%,transparent 65%)",
+                      "radial-gradient(circle, rgba(200,255,0,0.03) 0%, transparent 70%)",
                     pointerEvents: "none",
                   }}
                 />
 
-                <div className="flex items-center gap-8">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
+                  {/* Avatar Box */}
                   <div
-                    className="flex items-center justify-center rounded-3xl font-extrabold flex-shrink-0 relative"
+                    className="flex items-center justify-center rounded-3xl font-extrabold shrink-0 relative"
                     style={{
                       width: 88,
                       height: 88,
-                      background: "linear-gradient(135deg,#1a1a1a,#242424)",
+                      background: "linear-gradient(135deg, #141414, #222)",
                       border: "1px solid #2a2a2a",
                       fontSize: 32,
                       color: "#c8ff00",
@@ -844,23 +909,24 @@ export default function DashboardClientView({ user, analysis = [] }) {
                     <div
                       className="pulse-dot absolute"
                       style={{
-                        width: 10,
-                        height: 10,
+                        width: 12,
+                        height: 12,
                         borderRadius: "50%",
                         background: "#c8ff00",
-                        border: "2px solid #080808",
+                        border: "2.5px solid #0d0d0d",
                         bottom: 4,
                         right: 4,
-                        boxShadow: "0 0 8px #c8ff00",
+                        boxShadow: "0 0 12px #c8ff00",
                       }}
                     />
                   </div>
 
-                  <div className="flex-1">
+                  {/* Identity & Core Meta Row */}
+                  <div className="flex-1 w-full text-center md:text-left">
                     <h2
                       className="font-extrabold mb-1"
                       style={{
-                        fontSize: 26,
+                        fontSize: 22,
                         letterSpacing: -1,
                         color: "#f0ede8",
                       }}
@@ -868,13 +934,13 @@ export default function DashboardClientView({ user, analysis = [] }) {
                       {firstName} {lastName}
                     </h2>
                     <p
-                      className="fm mb-5"
-                      style={{ fontSize: 13, color: "#666" }}
+                      className="fm mb-6"
+                      style={{ fontSize: 14, color: "#666" }}
                     >
                       {email}
                     </p>
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       {[
                         {
                           label: "Account Status",
@@ -894,11 +960,12 @@ export default function DashboardClientView({ user, analysis = [] }) {
                       ].map(({ label, value, color }) => (
                         <div
                           key={label}
-                          className="rounded-2xl"
+                          className="rounded-2xl flex-1"
                           style={{
-                            background: "#111",
-                            border: "1px solid #1e1e1e",
+                            background: "#121212",
+                            border: "1px solid #1c1c1c",
                             padding: "14px 18px",
+                            textAlign: "left",
                           }}
                         >
                           <div
@@ -925,205 +992,228 @@ export default function DashboardClientView({ user, analysis = [] }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 mb-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {[
                   {
-                    label: "Fake claims detected",
+                    label: "Fake Claims Detected",
                     value: fakeCount,
-                    color: "#ff4444",
-                    bg: "rgba(255,68,68,0.06)",
-                    border: "rgba(255,68,68,0.15)",
-                    icon: "🚫",
+                    themeColor: "text-red-400",
+                    glowColor: "group-hover:after:bg-red-500/[0.04]",
+                    borderColor: "border-red-500/10 hover:border-red-500/20",
+                    bgBadge: "bg-red-500/10 text-red-400 border-red-500/20",
+                    icon: (
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.75"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+                        />
+                      </svg>
+                    ),
                   },
                   {
-                    label: "Misleading content found",
+                    label: "Misleading Content Found",
                     value: misleadCount,
-                    color: "#ff8800",
-                    bg: "rgba(255,136,0,0.06)",
-                    border: "rgba(255,136,0,0.15)",
-                    icon: "⚠️",
+                    themeColor: "text-orange-400",
+                    glowColor: "group-hover:after:bg-orange-500/[0.04]",
+                    borderColor:
+                      "border-orange-500/10 hover:border-orange-500/20",
+                    bgBadge:
+                      "bg-orange-500/10 text-orange-400 border-orange-500/20",
+                    icon: (
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.75"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                      </svg>
+                    ),
                   },
                   {
-                    label: "Real claims verified",
+                    label: "Real Claims Verified",
                     value: realCount,
-                    color: "#00e676",
-                    bg: "rgba(0,230,118,0.06)",
-                    border: "rgba(0,230,118,0.15)",
-                    icon: "✅",
+                    themeColor: "text-emerald-400",
+                    glowColor: "group-hover:after:bg-emerald-500/[0.04]",
+                    borderColor:
+                      "border-emerald-500/10 hover:border-emerald-500/20",
+                    bgBadge:
+                      "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+                    icon: (
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.75"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"
+                        />
+                      </svg>
+                    ),
                   },
-                ].map(({ label, value, color, bg, border, icon }) => (
-                  <div
-                    key={label}
-                    className="rounded-2xl"
-                    style={{
-                      background: bg,
-                      border: `1px solid ${border}`,
-                      padding: "24px 20px",
-                    }}
-                  >
-                    <div style={{ fontSize: 22, marginBottom: 12 }}>{icon}</div>
+                ].map(
+                  ({
+                    label,
+                    value,
+                    themeColor,
+                    glowColor,
+                    borderColor,
+                    bgBadge,
+                    icon,
+                  }) => (
                     <div
-                      className="font-extrabold"
-                      style={{
-                        fontSize: 36,
-                        letterSpacing: -2,
-                        color,
-                        lineHeight: 1,
-                      }}
+                      key={label}
+                      className={`group relative overflow-hidden rounded-xl border bg-neutral-950/40 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 ${borderColor} ${value === 0 ? "opacity-50" : "opacity-100"}`}
                     >
-                      {value}
+                      <div
+                        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none after:absolute after:inset-0 after:rounded-xl after:blur-xl ${glowColor}`}
+                      />
+
+                      <div className="relative z-10 flex flex-col justify-between h-full">
+                        <div className="flex items-center justify-between mb-4">
+                          <div
+                            className={`p-2 rounded-lg bg-neutral-900 border border-neutral-800/60 ${themeColor}`}
+                          >
+                            {icon}
+                          </div>
+                          <span
+                            className={`text-[10px] tracking-wider font-mono uppercase font-semibold px-2 py-0.5 rounded border ${bgBadge}`}
+                          >
+                            {value === 0 ? "Idle" : "Live Stream"}
+                          </span>
+                        </div>
+
+                        <div>
+                          <div
+                            className={`text-4xl font-bold font-mono tracking-tight tabular-nums transition-colors duration-300 ${value > 0 ? themeColor : "text-neutral-500"}`}
+                          >
+                            {value.toLocaleString()}
+                          </div>
+
+                          <div className="text-xs text-neutral-400 mt-1.5 font-medium tracking-wide">
+                            {label}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        fontSize: 13,
-                        color: "#999",
-                        marginTop: 8,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {label}
-                    </div>
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
 
-              <div
-                className="rounded-2xl"
-                style={{
-                  background: "#0d0d0d",
-                  border: "1px solid #161616",
-                  padding: "24px 28px",
-                }}
-              >
-                <div
-                  className="fm mb-4"
-                  style={{
-                    fontSize: 10,
-                    color: "#444",
-                    letterSpacing: 2,
-                    textTransform: "uppercase",
-                  }}
-                >
+              {/* Detailed Meta Parameters Box */}
+              <div className="rounded-xl border border-neutral-800/60 bg-neutral-950/40 p-5 md:p-6 backdrop-blur-md mb-6">
+                <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 font-semibold mb-2">
                   Account Information
                 </div>
-                {[
-                  { label: "Full Name", value: `${firstName} ${lastName}` },
-                  { label: "Email", value: email },
-                  { label: "Account", value: "Free tier · Unlimited scans" },
-                  {
-                    label: "Data policy",
-                    value:
-                      "Your articles are never shared or used for training",
-                  },
-                ].map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className="flex items-start justify-between py-4"
-                    style={{ borderBottom: "1px solid #141414" }}
-                  >
-                    <span
-                      className="fm"
-                      style={{ fontSize: 12, color: "#555" }}
+
+                <div className="divide-y divide-neutral-800/40">
+                  {[
+                    { label: "Full Name", value: `${firstName} ${lastName}` },
+                    { label: "Email Address", value: email },
+                    {
+                      label: "License Level",
+                      value: "Free Tier · Unlimited Scans",
+                      badge: true,
+                    },
+                    {
+                      label: "Data Policy",
+                      value:
+                        "Your articles are entirely private & omitted from training sets",
+                    },
+                  ].map(({ label, value, badge }) => (
+                    <div
+                      key={label}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-2 first:pt-2 last:pb-2"
                     >
-                      {label}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        color: "#ccc",
-                        maxWidth: 320,
-                        textAlign: "right",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {value}
-                    </span>
-                  </div>
-                ))}
+                      <span className="text-xs font-medium text-neutral-400">
+                        {label}
+                      </span>
+
+                      <span
+                        className={`text-xs md:text-sm text-neutral-300 max-w-none sm:max-w-[450px] text-left sm:text-right leading-relaxed ${
+                          badge ? "font-mono text-emerald-400 font-medium" : ""
+                        }`}
+                      >
+                        {value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div
-                className="rounded-2xl mt-5"
-                style={{
-                  background: "rgba(255,68,68,0.04)",
-                  border: "1px solid rgba(255,68,68,0.12)",
-                  padding: "24px 28px",
-                }}
-              >
-                <div
-                  className="fm mb-1"
-                  style={{
-                    fontSize: 10,
-                    color: "#ff4444",
-                    letterSpacing: 2,
-                    textTransform: "uppercase",
-                  }}
-                >
+              {/* Danger Zone Segment */}
+              <div className="rounded-xl border border-red-500/10 bg-red-500/1 p-5 md:p-6 mb-6 backdrop-blur-md">
+  
+                <div className="text-[10px] font-mono uppercase tracking-widest text-red-400 font-semibold mb-2">
                   Danger Zone
                 </div>
-                <p style={{ fontSize: 13, color: "#666", marginBottom: 16 }}>
-                  Sign out of your Veridex account on this device.
+
+                <p className="text-xs md:text-sm text-neutral-500 mb-5 leading-relaxed max-w-xl">
+                  Terminate your current active session and securely clear local
+                  system states and cache tokens immediately.
                 </p>
                 <button
                   onClick={handleLogout}
                   disabled={loggingOut}
-                  className="fs font-bold flex items-center gap-2 transition-all"
-                  style={{
-                    background: "rgba(255,68,68,0.1)",
-                    border: "1px solid rgba(255,68,68,0.2)",
-                    color: "#ff4444",
-                    borderRadius: 12,
-                    padding: "11px 20px",
-                    fontSize: 13,
-                    cursor: "pointer",
-                    fontFamily: "inherit",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(255,68,68,0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255,68,68,0.1)";
-                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-red-500/15 bg-red-500/5 text-xs font-semibold font-mono tracking-wide text-red-400 transition-all duration-200 hover:bg-red-500/10 hover:border-red-500/25 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus:ring-1 focus:ring-red-500/30"
                 >
                   {loggingOut ? (
-                    <svg
-                      className="spin"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="rgba(255,68,68,0.3)"
-                        strokeWidth="3"
-                      />
-                      <path
-                        d="M12 2a10 10 0 0 1 10 10"
-                        stroke="#ff4444"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                      />
-                    </svg>
+                    <>
+                      <svg
+                        className="animate-spin w-3.5 h-3.5 text-red-400"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <circle
+                          className="opacity-20"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                        />
+                        <path
+                          className="opacity-100"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      <span>Signing out...</span>
+                    </>
                   ) : (
-                    <svg
-                      width="14"
-                      height="14"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      />
-                    </svg>
+                    <>
+                      <svg
+                        className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.75"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
+                        />
+                      </svg>
+                      <span>Sign out</span>
+                    </>
                   )}
-                  {loggingOut ? "Signing out..." : "Sign out"}
                 </button>
               </div>
             </div>
