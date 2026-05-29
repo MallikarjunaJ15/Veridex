@@ -56,7 +56,8 @@ export default function AnalyzePage() {
 
     const t0 = Date.now();
     const apiPromise = createAnalysis({ article: article.trim() });
-    console.log("response", apiPromise?.analysis);
+    const res = await apiPromise;
+    console.log("response", res);
     addLog("Pipeline initialized", "info");
     addLog(`Article received — ${article.trim().length} characters`, "data");
 

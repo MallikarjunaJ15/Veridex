@@ -1,5 +1,28 @@
 import mongoose from "mongoose";
 
+const evidenceSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  url: { type: String, required: true },
+  content: { type: String, required: true },
+  tier: { type: Number, enum: [1, 2, 3], required: true },
+  sourceName: { type: String, default: "Unknown Source" },
+});
+
+const claimAnalysisSchema = new mongoose.Schema({
+  claimText: { type: String, required: true },
+  verdict: {
+    type: String,
+    enum: ["TRUE", "FALSE", "MISLEADING", "UNVERIFIABLE"],
+    required: true,
+  },
+  confidence: {
+    type: String,
+    enum: ["HIGH", "MEDIUM", "LOW"],
+    required: true,
+  },
+  explanation: { type: String, required: true },
+  evidence: [evidenceSchema],
+});
 const analysisSchema = new mongoose.Schema(
   {
     userId: {
@@ -12,24 +35,17 @@ const analysisSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    claim: {
+    overallVerdict: {
       type: String,
+      enum: ["VERIFIED", "FALSE", "MISLEADING", "UNVERIFIABLE"],
+      required: true,
     },
-    verdict: {
+    summary: {
       type: String,
-      enum: ["fake", "real", "misleading", "unverifiable"],
+      required: true,
     },
-    score: {
-      type: Number,
-    },
-    explanation: {
-      type: String,
-    },
-    resources: [
-      {
-        type: String,
-      },
-    ],
+    claims: [claimAnalysisSchema],
+    totalSourcesProcessed: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

@@ -2,9 +2,8 @@
 import analysisModel from "../models/analysis.model";
 import connectDb from "../lib/db";
 import { extractClaim } from "../lib/pipeline/extract";
-import { searchEvidence } from "../lib/pipeline/search";
-import { generateVerdict } from "../lib/pipeline/verdict";
 import { generateUserFromToken } from "./auth.actions";
+import { verifyIndividualClaim } from "../lib/pipeline/verify";
 
 export const createAnalysis = async ({ article }) => {
   try {
@@ -19,36 +18,68 @@ export const createAnalysis = async ({ article }) => {
       const analysis = await analysisModel.create({
         userId,
         article,
-        claim: "No verifiable factual claims detected in this input.",
-        verdict: "unverifiable",
-        score: 0,
-        explanation:
-          "The system determined this submission is a general query or text string rather than a verifiable factual claim. An explainable fact-check requires concrete statements to cross-reference against live web documentation.",
-        resources: [],
+        overallVerdict: "UNVERIFIABLE",
+        summary:
+          "No verifiable assertions discovered within the submitted payload text structure.",
+        claims: [],
+        totalSourcesProcessed: 0,
       });
       return {
         success: true,
         analysis: JSON.parse(JSON.stringify(analysis.toObject())),
       };
     }
-    // Step 2: Search (Returns Array of Objects)
-    const evidenceResults = await searchEvidence(claimsArray);
-    // Step 3: Analyze (Returns { verdict, score, explanation })
-    const analyse = await generateVerdict(claimsArray, evidenceResults);
+    // Step 2 & 3: Map each claim to its own isolated search and verification routine in parallel
+    const verifiedClaimsPayload = await Promise.all(
+      claimsArray.map((claim) => verifyIndividualClaim(claim)),
+    );
 
-    const verifiedUrls = evidenceResults.map((item) => item.url);
-    const analysis = await analysisModel.create({
+    // Step 4: Programmatic  Verdict Mapping (Deterministic, Not Hallucinated)
+    const verdicts = verifiedClaimsPayload.map((c) => c.verdict);
+    let finalVerdict = "VERIFIED";
+    let summaryText =
+      "All processed claims within this text have been verified against high-authority reference databases.";
+
+    const hasFalse = verdicts.includes("FALSE");
+    const hasMisleading = verdicts.includes("MISLEADING");
+    const hasTrue = verdicts.includes("TRUE");
+    const hasUnverifiable = verdicts.includes("UNVERIFIABLE");
+
+    if (hasFalse && !hasTrue && !hasMisleading) {
+      finalVerdict = "FALSE";
+      summaryText =
+        "The main claims present inside this document are completely debunked by documented facts.";
+    } else if (
+      hasMisleading ||
+      (hasTrue && hasFalse) ||
+      (hasFalse && hasUnverifiable)
+    ) {
+      finalVerdict = "MISLEADING";
+      summaryText =
+        "This content blends validated facts with unsubstantiated or false narratives. Out-of-context tracking observed.";
+    } else if (hasUnverifiable && !hasFalse && !hasMisleading) {
+      finalVerdict = "UNVERIFIABLE";
+      summaryText =
+        "Insufficient credible evidence remains available online to establish an objective factual baseline.";
+    }
+
+    const totalSourcesCount = verifiedClaimsPayload.reduce(
+      (acc, c) => acc + c.evidence.length,
+      0,
+    );
+
+    // Step 5: Persist Production-Grade Analysis Record
+    const savedAnalysisDoc = await analysisModel.create({
       userId,
-      article,
-      claim: claimsArray.join(" | "),
-      verdict: analyse.verdict,
-      score: analyse.score,
-      explanation: analyse.explanation,
-      resources: verifiedUrls,
+      article: article,
+      overallVerdict: finalVerdict,
+      summary: summaryText,
+      claims: verifiedClaimsPayload,
+      totalSourcesProcessed: totalSourcesCount,
     });
     return {
       success: true,
-      analysis: JSON.parse(JSON.stringify(analysis.toObject())),
+      analysis: JSON.parse(JSON.stringify(savedAnalysisDoc.toObject())),
     };
   } catch (error) {
     console.error("🚨 PIPELINE CRASHED:", error);
