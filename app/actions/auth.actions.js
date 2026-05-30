@@ -82,7 +82,9 @@ export const generateUserFromToken = async () => {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
     return payload.userId;
-  } catch (error) {}
+  } catch (error) {
+    return { error: "Internal Server Error" };
+  }
 };
 
 export const getme = async () => {
@@ -93,7 +95,6 @@ export const getme = async () => {
     const user = await userModel.findById(userId).select("-password").lean();
     return { user: JSON.parse(JSON.stringify(user)) };
   } catch (error) {
-    console.error("Error in getme:", error);
     return { user: null };
   }
 };

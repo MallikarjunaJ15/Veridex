@@ -136,51 +136,48 @@ export default function LandingPage({ user }) {
     },
   ];
 
-  const verdicts = [
+  const sampleVerdicts = [
     {
       label: "MISLEADING",
-      color: "text-orange-400",
-      bg: "bg-orange-400/10",
-      border: "border-orange-400/20",
-      dot: "bg-orange-400",
-      scoreColor: "text-orange-400",
-      barColor: "#fb923c",
+      color: "text-amber-500",
+      bg: "bg-amber-500/10",
+      border: "border-amber-500/20",
+      dot: "bg-amber-500",
+      barColor: "#f59e0b",
       article:
-        '"Government to provide free smartphones to all BPL families before elections under Digital India Mobile Yojana"',
-      claim:
-        "No official press release or gazette notification exists for this scheme. PIB Fact Check has explicitly marked this claim false. The scheme name does not appear in any government database or budget allocation.",
-      score: 82,
+        '"COVID vaccines reduced hospitalization rates. However, they cause infertility in most women."',
+      explanation:
+        "While the first claim regarding hospitalization rates is factually accurate, the secondary claim about infertility is completely false. Therefore, the overall text is highly misleading.",
+      claimsCount: 2,
       sources: 14,
     },
     {
-      label: "REAL",
-      color: "text-emerald-400",
-      bg: "bg-emerald-400/10",
-      border: "border-emerald-400/20",
-      dot: "bg-emerald-400",
-      scoreColor: "text-emerald-400",
-      barColor: "#34d399",
+      label: "FALSE",
+      color: "text-red-500",
+      bg: "bg-red-500/10",
+      border: "border-red-500/20",
+      dot: "bg-red-500",
+      barColor: "#ef4444",
       article:
-        '"ISRO successfully launches PSLV-C58 carrying XPoSat satellite into orbit"',
-      claim:
-        "Confirmed by ISRO official press release and mission control. Covered by Reuters, NDTV, and The Hindu. All launch parameters match official mission documentation.",
-      score: 96,
-      sources: 11,
+        '"The CEO of OpenTech just announced they are filing for bankruptcy and shutting down all servers tomorrow."',
+      explanation:
+        "No primary or secondary news sources support this statement. OpenTech's recent financial disclosures show record profits, making this a fabricated rumor.",
+      claimsCount: 3,
+      sources: 8,
     },
     {
-      label: "FAKE",
-      color: "text-red-400",
-      bg: "bg-red-400/10",
-      border: "border-red-400/20",
-      dot: "bg-red-400",
-      scoreColor: "text-red-400",
-      barColor: "#f87171",
+      label: "TRUE",
+      color: "text-[#00e676]",
+      bg: "bg-[#00e676]/10",
+      border: "border-[#00e676]/20",
+      dot: "bg-[#00e676]",
+      barColor: "#00e676",
       article:
-        '"Scientists confirm 5G towers cause COVID-19 by activating dormant viruses in the body"',
-      claim:
-        "No peer-reviewed study supports this claim. WHO, CDC, and ICMR have explicitly refuted it. The assertion contradicts fundamental virology and physics principles.",
-      score: 97,
-      sources: 18,
+        '"The new climate bill passed the Senate with a 51-49 vote, allocating $300 billion to renewable energy projects over the next decade."',
+      explanation:
+        "This statement perfectly matches official congressional voting records and the published text of the bill verified across multiple tier-1 government sources.",
+      claimsCount: 4,
+      sources: 12,
     },
   ];
 
@@ -315,16 +312,14 @@ export default function LandingPage({ user }) {
   ];
 
   const marqueeItems = [
-    "RAG Pipeline",
-    "Gemini 2.5 Flash",
-    "Tavily Search",
-    "Real-time Verification",
+    "Paste the article",
+    "AI extracts core claims",
+    "Real-time Verification per claim",
     "Evidence-based AI",
     "15+ Sources",
     "Explainable Verdicts",
     "No Hallucination",
     "Fact-Check in 10s",
-    "MongoDB Backed",
   ];
 
   return (
@@ -540,92 +535,83 @@ export default function LandingPage({ user }) {
         </section>
 
         {/* REAL EXAMPLES */}
-        <section id="examples" className="py-20 md:py-30 px-12">
-          <div className="max-w-250 mx-auto">
+        <section id="examples" className="py-20 md:py-30 px-6 md:px-12">
+          <div className="max-w-[1000px] mx-auto">
             <div className="text-center mb-16">
-              <div className="font-mono-dm text-[10px] tracking-[3px] uppercase text-[#c8ff00] mb-4">
+              <div className="font-mono text-[10px] tracking-[3px] uppercase text-[#c8ff00] mb-4 font-bold">
                 Real Examples
               </div>
               <h2
-                className="font-extrabold tracking-[-2px]"
+                className="font-extrabold tracking-tight text-white"
                 style={{ fontSize: "clamp(32px, 4vw, 52px)" }}
               >
                 See it in action
               </h2>
-              <p className="text-base text-[#999] mt-4 max-w-[440px] mx-auto">
-                Real articles. Real verdicts. Real sources.
+              <p className="text-base text-zinc-400 mt-4 max-w-[440px] mx-auto">
+                Real articles. Independent claim extraction. Live sources.
               </p>
             </div>
 
-            <div className="flex flex-col gap-4">
-              {verdicts.map(
-                (
-                  {
-                    label,
-                    color,
-                    bg,
-                    border,
-                    dot,
-                    scoreColor,
-                    barColor,
-                    article,
-                    claim,
-                    score,
-                    sources,
-                  },
-                  i,
-                ) => (
+            <div className="flex flex-col gap-5">
+              {sampleVerdicts.map((item, i) => (
+                <div
+                  key={i}
+                  className="px-6 md:px-8 py-7 bg-[#0d0d0d] border border-[#1a1a1a] rounded-2xl grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 md:gap-8 items-start relative overflow-hidden transition-all hover:border-[#333]"
+                >
                   <div
-                    key={i}
-                    className={`verdict-card px-8 py-7 bg-[#0d0d0d] border border-[#1a1a1a] rounded-2xl grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start relative overflow-hidden`}
-                  >
+                    className="absolute left-0 top-0 bottom-0 w-1"
+                    style={{ background: item.barColor }}
+                  />
+
+                  <div className="pl-2 md:pl-3">
                     <div
-                      className="absolute left-0 top-0 bottom-0 w-0.75"
-                      style={{ background: barColor }}
-                    />
-                    <div className="pl-1 md:pl-2">
-                      <div
-                        className={`inline-flex items-center gap-1.75 ${bg} border ${border} rounded-md px-2.5 py-1 mb-4`}
+                      className={`inline-flex items-center gap-2 ${item.bg} border ${item.border} rounded-md px-2.5 py-1 mb-4`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${item.dot} inline-block shrink-0`}
+                      />
+                      <span
+                        className={`font-mono text-[10px] ${item.color} tracking-[1.5px] font-bold`}
                       >
-                        <span
-                          className={`w-1.5 h-1.5 rounded-full ${dot} inline-block`}
-                        />
-                        <span
-                          className={`font-mono-dm text-[10px] ${color} tracking-[1.5px] font-semibold`}
-                        >
-                          {label}
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#bbb] italic mb-3 leading-[1.6] font-medium">
-                        {article}
-                      </p>
-                      <p className="text-[13px] text-[#999] leading-[1.75]">
-                        {claim}
-                      </p>
+                        {item.label}
+                      </span>
                     </div>
-                    <div className="flex flex-row md:flex-col justify-between md:justify-start w-full md:w-auto gap-4 items-center md:items-end shrink-0 border-t border-[#1a1a1a] md:border-none pt-4 md:pt-0">
-                      <div className="text-center">
-                        <div
-                          className={`text-[28px] font-extrabold ${scoreColor} tracking-[-1px]`}
-                        >
-                          {score}
-                        </div>
-                        <div className="font-mono-dm text-[10px] text-[#666] tracking-widest uppercase mt-1">
-                          score
-                        </div>
+
+                    <p className="text-[15px] text-zinc-300 italic mb-3 leading-[1.6] font-medium border-l-2 border-[#222] pl-4">
+                      {item.article}
+                    </p>
+
+                    <p className="text-[14px] text-zinc-400 leading-relaxed">
+                      <span className="font-semibold text-zinc-300">
+                        Analysis:{" "}
+                      </span>
+                      {item.explanation}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-row md:flex-col justify-between md:justify-center w-full md:w-auto gap-6 md:gap-8 shrink-0 border-t border-[#1a1a1a] md:border-none pt-5 md:pt-2 md:pl-6 md:border-l">
+                    <div className="text-center md:text-right">
+                      <div className="text-[28px] font-extrabold text-white tracking-tight leading-none">
+                        {item.claimsCount}
                       </div>
-                      <div className="text-center">
-                        <div className="text-[22px] font-bold text-[#f0ede8]">
-                          {sources}
-                        </div>
-                        <div className="font-mono-dm text-[10px] text-[#666] tracking-widest uppercase mt-1">
-                          sources
-                        </div>
+                      <div className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase mt-2 font-semibold">
+                        Claims
+                        <br className="hidden md:block" /> Verified
+                      </div>
+                    </div>
+
+                    <div className="text-center md:text-right">
+                      <div className="text-[24px] font-bold text-zinc-300 leading-none">
+                        {item.sources}
+                      </div>
+                      <div className="font-mono text-[10px] text-zinc-500 tracking-widest uppercase mt-2 font-semibold">
+                        Sources
+                        <br className="hidden md:block" /> Checked
                       </div>
                     </div>
                   </div>
-                ),
-              )}
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -766,10 +752,10 @@ export default function LandingPage({ user }) {
           <div className="text-base font-extrabold">
             Veri<span className="text-[#c8ff00]">dex</span>
           </div>
-          <div className="font-mono-dm text-[11px] text-[#444]">
-            Built with Next.js · Node.js · Gemini 2.5 · Tavily · MongoDB
+          <div className="font-mono-dm text-[11px] text-zinc-400">
+            Truth backed by evidence.
           </div>
-          <div className="font-mono-dm text-[11px] text-[#444]">
+          <div className="font-mono-dm text-[11px] text-[#7b7a7a]">
             © 2026 Veridex
           </div>
         </footer>

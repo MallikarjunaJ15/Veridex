@@ -82,7 +82,6 @@ export const createAnalysis = async ({ article }) => {
       analysis: JSON.parse(JSON.stringify(savedAnalysisDoc.toObject())),
     };
   } catch (error) {
-    console.error("🚨 PIPELINE CRASHED:", error);
     return { error: error.message || "Internal Server Error" };
   }
 };
@@ -111,7 +110,6 @@ export const getAnalysisById = async (id) => {
     if (!analysis) return { analysis: null };
     return { analysis: JSON.parse(JSON.stringify(analysis)) };
   } catch (error) {
-    console.error("Error fetching analysis item:", error);
     return { analysis: null };
   }
 };

@@ -439,210 +439,142 @@ export default function DashboardClientView({ user, analysis = [] }) {
           style={{ background: "#080808" }}
         >
           {activeTab === "analysis" && (
-            <div
-              className="fade-in px-4 py-6 md:p-12"
-              style={{ maxWidth: 900, margin: "0 auto" }}
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
+            <div className="fade-in px-4 py-8 md:p-12 w-full max-w-[1200px] mx-auto">
+              {/* --- Header Section --- */}
+              <div className="flex flex-col lg:flex-row sm:items-center sm:justify-between gap-6 mb-12 lg:mb-16">
                 <div>
-                  <div
-                    className="fm mb-2"
-                    style={{
-                      fontSize: 10,
-                      color: "#444",
-                      letterSpacing: 2,
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    — Analysis History
+                  <div className="font-mono text-xs md:text-sm text-[#888] tracking-[0.2em] uppercase mb-4 flex items-center gap-2">
+                    <span className="w-6 h-[1px] bg-[#444]"></span> Analysis
+                    History
                   </div>
-                  <h1
-                    className="font-extrabold tracking-tight text-2xl md:text-3xl"
-                    style={{
-                      letterSpacing: -1.5,
-                      color: "#f0ede8",
-                    }}
-                  >
+                  <h1 className="font-extrabold tracking-tight text-2xl md:text-2xl lg:text-3xl text-[#f0ede8] mb-4">
                     Your Verifications
                   </h1>
-                  <p style={{ fontSize: 14, color: "#666", marginTop: 6 }}>
-                    Every article and claim you've fact-checked — with full AI
-                    evidence.
+                  <p className="text-base md:text-lg text-[#777] max-w-xl leading-relaxed">
+                    Every article and claim you've fact-checked, backed by our
+                    full AI evidence pipeline.
                   </p>
                 </div>
 
-                <a
-                  href="/analyze"
-                  className="w-full md:w-auto"
-                  style={{ textDecoration: "none" }}
-                >
-                  <button
-                    className="fs font-bold flex items-center justify-center gap-2 transition-all w-full md:w-auto"
-                    style={{
-                      background: "#c8ff00",
-                      color: "#080808",
-                      border: "none",
-                      borderRadius: 12,
-                      padding: "11px 20px",
-                      fontSize: 13,
-                      cursor: "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.filter = "brightness(1.1)";
-                      e.currentTarget.style.boxShadow =
-                        "0 0 24px rgba(200,255,0,0.25)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.filter = "brightness(1)";
-                      e.currentTarget.style.boxShadow = "none";
-                    }}
-                  >
+                <a href="/analyze" className="w-full lg:w-auto">
+                  <button className="w-full lg:w-auto flex items-center justify-center gap-3 bg-[#c8ff00] text-[#080808] px-8 py-4 rounded-xl text-base font-bold transition-all duration-300 hover:shadow-[0_0_24px_rgba(200,255,0,0.3)] hover:scale-[1.02] active:scale-95">
                     <svg
-                      width="14"
-                      height="14"
+                      width="20"
+                      height="20"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
+                      strokeWidth="2.5"
                       viewBox="0 0 24 24"
                     >
-                      <path d="M12 5v14M5 12h14" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 5v14M5 12h14"
+                      />
                     </svg>
                     New Analysis
                   </button>
                 </a>
               </div>
 
+              {/* --- Stats Grid --- */}
               {totalScans > 0 && (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12 lg:mb-16">
                   {[
                     {
-                      label: "Total Scans",
+                      label: "Fact Checks Completed",
                       value: totalScans,
                       color: "#f0ede8",
-                      sub: "all time",
+                      sub: "All time",
+                      glow: "rgba(240, 237, 232, 0.1)",
                     },
                     {
-                      label: "Fake Detected",
+                      label: "False Claims Found",
                       value: fakeCount,
-                      color: "#ff4444",
-                      sub: "confirmed false",
+                      color: "#ff3366",
+                      sub: "Confirmed false",
+                      glow: "rgba(255, 51, 102, 0.1)",
                     },
                     {
                       label: "Misleading",
                       value: misleadCount,
-                      color: "#ff8800",
-                      sub: "partial truth",
+                      color: "#ffaa00",
+                      sub: "Partial truth",
+                      glow: "rgba(255, 170, 0, 0.1)",
                     },
                     {
-                      label: "Verified Real",
+                      label: "Verified Claims",
                       value: realCount,
-                      color: "#00e676",
-                      sub: "confirmed true",
+                      color: "#00e5ff",
+                      sub: "Confirmed true",
+                      glow: "rgba(0, 229, 255, 0.1)",
                     },
-                  ].map(({ label, value, color, sub }) => (
+                  ].map(({ label, value, color, sub, glow }) => (
                     <div
                       key={label}
-                      className="rounded-2xl p-4 md:p-5"
-                      style={{
-                        background: "#0d0d0d",
-                        border: "1px solid #161616",
-                      }}
+                      className="group relative rounded-2xl p-6 md:p-8 bg-[#090909] border border-[#222] overflow-hidden transition-all duration-300 hover:border-[#333] hover:bg-[#0c0c0c]"
                     >
                       <div
-                        className="font-extrabold"
-                        style={{
-                          fontSize: 32,
-                          letterSpacing: -2,
-                          color,
-                          lineHeight: 1,
-                        }}
-                      >
-                        {value}
-                      </div>
-                      <div
-                        className="font-semibold mt-2"
-                        style={{ fontSize: 13, color: "#f0ede8" }}
-                      >
-                        {label}
-                      </div>
-                      <div
-                        className="fm mt-1"
-                        style={{ fontSize: 10, color: "#444" }}
-                      >
-                        {sub}
+                        className="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                        style={{ background: glow }}
+                      />
+
+                      <div className="relative z-10">
+                        <div
+                          className="font-extrabold text-3xl md:text-4xl tracking-tighter mb-3"
+                          style={{ color }}
+                        >
+                          {value}
+                        </div>
+                        <div className="font-semibold text-lg md:text-xl text-[#e0e0e0] mb-1">
+                          {label}
+                        </div>
+                        <div className="font-mono text-xs md:text-sm text-[#666] uppercase tracking-wider">
+                          {sub}
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
 
+              {/* --- Main Content Area --- */}
               {analysis.length === 0 ? (
-                <div
-                  className="flex flex-col items-center justify-center rounded-3xl text-center px-4"
-                  style={{
-                    paddingTop: 80,
-                    paddingBottom: 80,
-                    background: "#0d0d0d",
-                    border: "1px dashed #1e1e1e",
-                  }}
-                >
-                  <div
-                    className="flex items-center justify-center rounded-2xl mb-5"
-                    style={{
-                      width: 56,
-                      height: 56,
-                      background: "rgba(200,255,0,0.06)",
-                      border: "1px solid rgba(200,255,0,0.1)",
-                    }}
-                  >
+                <div className="flex flex-col items-center justify-center rounded-3xl text-center p-16 md:p-24 bg-[#090909] border border-dashed border-[#333] relative overflow-hidden">
+                  <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5 pointer-events-none" />
+
+                  <div className="relative flex items-center justify-center w-20 h-20 rounded-2xl bg-[#141414] border border-[#2a2a2a] mb-6 shadow-[0_0_30px_rgba(200,255,0,0.05)]">
                     <svg
-                      width="22"
-                      height="22"
+                      width="32"
+                      height="32"
                       fill="none"
                       stroke="#c8ff00"
                       strokeWidth="1.5"
                       viewBox="0 0 24 24"
                     >
                       <circle cx="11" cy="11" r="8" />
-                      <path d="m21 21-4.3-4.3" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m21 21-4.3-4.3"
+                      />
                     </svg>
                   </div>
-                  <h3
-                    className="font-bold mb-2"
-                    style={{ fontSize: 18, color: "#f0ede8" }}
-                  >
+                  <h3 className="font-bold text-2xl md:text-3xl text-[#f0ede8] mb-4">
                     No verifications yet
                   </h3>
-                  <p
-                    style={{
-                      fontSize: 14,
-                      color: "#555",
-                      marginBottom: 24,
-                      maxWidth: 320,
-                    }}
-                  >
+                  <p className="text-base md:text-lg text-[#666] mb-8 max-w-md leading-relaxed">
                     Paste a news article or claim to start fact-checking with
                     our live AI pipeline.
                   </p>
-                  <a href="/analyze" style={{ textDecoration: "none" }}>
-                    <button
-                      className="fs font-bold transition-all"
-                      style={{
-                        background: "#c8ff00",
-                        color: "#080808",
-                        border: "none",
-                        borderRadius: 12,
-                        padding: "12px 24px",
-                        fontSize: 14,
-                        cursor: "pointer",
-                      }}
-                    >
+                  <a href="/analyze">
+                    <button className="bg-[#1a1a1a] text-[#c8ff00] border border-[#333] px-8 py-4 rounded-xl text-base font-bold transition-all hover:bg-[#222] hover:border-[#444]">
                       Start Fact-Checking →
                     </button>
                   </a>
                 </div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-5">
                   {analysis.map((item, i) => {
                     const vc =
                       verdictConfig[item.verdict] || verdictConfig.misleading;
@@ -654,177 +586,114 @@ export default function DashboardClientView({ user, analysis = [] }) {
                           year: "numeric",
                         })
                       : "";
+
                     return (
                       <Link
                         href={`/dashboard/analysis/${item._id}`}
                         key={item._id || i}
-                        style={{ textDecoration: "none" }}
                       >
-                        <div
-                          className="analysis-card rounded-2xl transition-all duration-200 relative overflow-hidden p-4 md:p-6"
-                          style={{
-                            background: "#0d0d0d",
-                            border: "1px solid #161616",
-                            cursor: "pointer",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = "#242424";
-                            e.currentTarget.style.background = "#0f0f0f";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = "#161616";
-                            e.currentTarget.style.background = "#0d0d0d";
-                          }}
-                        >
+                        <div className="group relative bg-[#090909] border border-[#222] rounded-2xl p-6 md:p-8 transition-all duration-300 hover:bg-[#0c0c0c] hover:border-[#333] cursor-pointer overflow-hidden">
                           <div
+                            className="absolute left-0 top-0 bottom-0 w-[4px] transition-all duration-300 group-hover:w-[6px]"
                             style={{
-                              position: "absolute",
-                              left: 0,
-                              top: 0,
-                              bottom: 0,
-                              width: 3,
                               background: vc.color,
-                              borderRadius: "2px 0 0 2px",
+                              boxShadow: `0 0 16px ${vc.color}40`,
                             }}
                           />
 
-                          <div className="pl-2 md:pl-4">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-                              <div className="flex flex-wrap items-center gap-2">
+                          <div className="pl-4 md:pl-6">
+                            {/* Card Header */}
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+                              <div className="flex flex-wrap items-center gap-3">
                                 <div
-                                  className="fm flex items-center gap-2 rounded-lg"
+                                  className="flex items-center gap-2 rounded-md px-3 py-1.5"
                                   style={{
                                     background: vc.bg,
                                     border: `1px solid ${vc.border}`,
-                                    padding: "4px 10px",
                                   }}
                                 >
                                   <span
-                                    style={{
-                                      width: 5,
-                                      height: 5,
-                                      borderRadius: "50%",
-                                      background: vc.color,
-                                      display: "inline-block",
-                                    }}
+                                    className="w-2 h-2 rounded-full animate-pulse"
+                                    style={{ background: vc.color }}
                                   />
                                   <span
-                                    className="font-bold tracking-[1.5px] uppercase"
-                                    style={{ fontSize: 10, color: vc.color }}
+                                    className="font-mono font-bold tracking-[0.15em] uppercase text-xs md:text-sm"
+                                    style={{ color: vc.color }}
                                   >
                                     {vc.label}
                                   </span>
                                 </div>
-                                <div
-                                  className="fm"
-                                  style={{
-                                    fontSize: 11,
-                                    color: "#555",
-                                    background: "#141414",
-                                    border: "1px solid #1e1e1e",
-                                    padding: "3px 10px",
-                                    borderRadius: 20,
-                                  }}
-                                >
-                                  Score {item.score ?? "—"}
+                                <div className="font-mono text-xs md:text-sm text-[#888] bg-[#141414] border border-[#222] px-3 py-1.5 rounded-md">
+                                  Score:{" "}
+                                  <span className="text-[#e0e0e0] font-bold">
+                                    {item.score ?? "—"}
+                                  </span>
                                 </div>
                               </div>
 
-                              {/* Date and actions container */}
-                              <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto border-t border-[#141414] sm:border-none pt-2 sm:pt-0">
-                                <span
-                                  className="fm"
-                                  style={{ fontSize: 11, color: "#555" }}
-                                >
+                              <div className="flex items-center justify-between md:justify-end gap-4 w-full md:w-auto mt-2 md:mt-0">
+                                <span className="font-mono text-xs md:text-sm text-[#555] uppercase tracking-wider">
                                   {date}
                                 </span>
-                                <span
-                                  className="card-arrow"
-                                  style={{ color: "#c8ff00" }}
-                                >
+                                <span className="text-[#444] text-xl transition-colors duration-300 group-hover:text-[#c8ff00] group-hover:translate-x-2 transform">
                                   →
                                 </span>
                               </div>
                             </div>
 
-                            <p
-                              className="font-medium mb-3 text-sm"
-                              style={{
-                                color: "#ccc",
-                                lineHeight: 1.6,
-                              }}
-                            >
+                            <p className="font-medium text-base md:text-lg text-[#ccc] leading-relaxed mb-6 pr-4 line-clamp-2 md:line-clamp-3">
                               {item.article
-                                ? `"${item.article.slice(0, 140)}${item.article.length > 140 ? "..." : ""}"`
-                                : "No article content"}
+                                ? `"${item.article}"`
+                                : "No article content provided."}
                             </p>
 
-                            {claims.length > 0 && (
-                              <div className="flex flex-wrap gap-2">
-                                {claims.slice(0, 2).map((c, ci) => (
-                                  <div
-                                    key={ci}
-                                    className="flex items-center gap-2 rounded-lg max-w-full"
-                                    style={{
-                                      background: "#111",
-                                      border: "1px solid #1e1e1e",
-                                      padding: "5px 10px",
-                                    }}
-                                  >
-                                    <span
-                                      className="fm font-bold shrink-0"
-                                      style={{
-                                        fontSize: 9,
-                                        color: "#c8ff00",
-                                        letterSpacing: 1,
-                                      }}
+                            {/* Footer */}
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-t border-[#1a1a1a] pt-5 mt-2">
+                              {claims.length > 0 && (
+                                <div className="flex flex-wrap gap-2 md:gap-3">
+                                  {claims.slice(0, 2).map((c, ci) => (
+                                    <div
+                                      key={ci}
+                                      className="flex items-center gap-2 bg-[#111] border border-[#222] rounded-lg px-3 py-2 max-w-[250px] md:max-w-[400px]"
                                     >
-                                      0{ci + 1}
-                                    </span>
-                                    <span
-                                      className="fm truncate"
-                                      style={{ fontSize: 11, color: "#888" }}
-                                    >
-                                      {c.trim()}
-                                    </span>
-                                  </div>
-                                ))}
-                                {claims.length > 2 && (
-                                  <div
-                                    className="fm shrink-0"
-                                    style={{
-                                      fontSize: 11,
-                                      color: "#444",
-                                      padding: "5px 10px",
-                                    }}
-                                  >
-                                    +{claims.length - 2} more
-                                  </div>
-                                )}
-                              </div>
-                            )}
+                                      <span className="font-mono font-bold text-[10px] md:text-xs text-[#c8ff00] tracking-widest shrink-0">
+                                        0{ci + 1}
+                                      </span>
+                                      <span className="font-mono text-xs md:text-sm text-[#999] truncate">
+                                        {c.trim()}
+                                      </span>
+                                    </div>
+                                  ))}
+                                  {claims.length > 2 && (
+                                    <div className="font-mono text-xs md:text-sm text-[#555] flex items-center px-2">
+                                      +{claims.length - 2} more
+                                    </div>
+                                  )}
+                                </div>
+                              )}
 
-                            {item.resources?.length > 0 && (
-                              <div className="flex items-center gap-2 mt-3">
-                                <svg
-                                  width="12"
-                                  height="12"
-                                  fill="none"
-                                  stroke="#555"
-                                  strokeWidth="1.5"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <circle cx="12" cy="12" r="10" />
-                                  <path d="M2 12h20" />
-                                </svg>
-                                <span
-                                  className="fm"
-                                  style={{ fontSize: 11, color: "#555" }}
-                                >
-                                  {item.resources.length} sources retrieved
-                                </span>
-                              </div>
-                            )}
+                              {item.resources?.length > 0 && (
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    fill="none"
+                                    stroke="#666"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                    />
+                                  </svg>
+                                  <span className="font-mono text-xs md:text-sm text-[#666] tracking-wide uppercase">
+                                    {item.resources.length} Sources
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </Link>
@@ -834,88 +703,42 @@ export default function DashboardClientView({ user, analysis = [] }) {
               )}
             </div>
           )}
-
           {activeTab === "profile" && (
-            <div
-              className="fade-in"
-              style={{ padding: "48px 24px", maxWidth: 900, margin: "0 auto" }}
-            >
-              {/* Header Section */}
-              <div className="mb-6 md:mb-10">
-                <div
-                  className="fm mb-2"
-                  style={{
-                    fontSize: 10,
-                    color: "#555",
-                    letterSpacing: 2,
-                    textTransform: "uppercase",
-                  }}
-                >
+            <div className="fade-in w-full max-w-225 mx-auto px-4 py-8 md:py-12">
+              <div className="mb-6 md:mb-10 text-center md:text-left">
+                <div className="fm mb-2 text-[10px] text-[#555] tracking-widest uppercase">
                   — Account
                 </div>
-                <h1
-                  className="font-extrabold tracking-tight"
-                  style={{
-                    fontSize: 32,
-                    letterSpacing: -1.5,
-                    color: "#f0ede8",
-                  }}
-                >
+                <h1 className="font-extrabold tracking-tight text-3xl md:text-4xl text-[#f0ede8]">
                   Profile
                 </h1>
-                <p style={{ fontSize: 14, color: "#888", marginTop: 6 }}>
+                <p className="text-sm text-[#888] mt-1.5">
                   Your Veridex account details and activity summary.
                 </p>
               </div>
 
-              {/* Premium Profile Hero Card */}
-              <div
-                className="rounded-3xl relative overflow-hidden mb-6"
-                style={{
-                  background: "#0d0d0d",
-                  border: "1px solid #1e1e1e",
-                  padding: "40px",
-                }}
-              >
-                {/* Ambient Neon Top-Right Glow */}
+              <div className="rounded-3xl relative overflow-hidden mb-6 bg-[#0d0d0d] border border-[#1e1e1e] p-6 md:p-10">
+              
                 <div
+                  className="absolute -top-30 -right-30 w-100 h-100 rounded-full pointer-events-none"
                   style={{
-                    position: "absolute",
-                    top: -120,
-                    right: -120,
-                    width: 400,
-                    height: 400,
-                    borderRadius: "50%",
                     background:
                       "radial-gradient(circle, rgba(200,255,0,0.03) 0%, transparent 70%)",
-                    pointerEvents: "none",
                   }}
                 />
 
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 relative z-10">
                   {/* Avatar Box */}
                   <div
-                    className="flex items-center justify-center rounded-3xl font-extrabold shrink-0 relative"
+                    className="flex items-center justify-center rounded-3xl font-extrabold shrink-0 relative w-20 h-20 md:w-24 md:h-24 text-2xl md:text-3xl text-[#c8ff00] border border-[#2a2a2a]"
                     style={{
-                      width: 88,
-                      height: 88,
                       background: "linear-gradient(135deg, #141414, #222)",
-                      border: "1px solid #2a2a2a",
-                      fontSize: 32,
-                      color: "#c8ff00",
                     }}
                   >
                     {initials}
                     <div
-                      className="pulse-dot absolute"
+                      className="pulse-dot absolute bottom-1 right-1 w-3 h-3 md:w-4 md:h-4 rounded-full bg-[#c8ff00] border-[2.5px] border-[#0d0d0d]"
                       style={{
-                        width: 12,
-                        height: 12,
-                        borderRadius: "50%",
-                        background: "#c8ff00",
-                        border: "2.5px solid #0d0d0d",
-                        bottom: 4,
-                        right: 4,
                         boxShadow: "0 0 12px #c8ff00",
                       }}
                     />
@@ -923,66 +746,36 @@ export default function DashboardClientView({ user, analysis = [] }) {
 
                   {/* Identity & Core Meta Row */}
                   <div className="flex-1 w-full text-center md:text-left">
-                    <h2
-                      className="font-extrabold mb-1"
-                      style={{
-                        fontSize: 22,
-                        letterSpacing: -1,
-                        color: "#f0ede8",
-                      }}
-                    >
+                    <h2 className="font-extrabold mb-1 text-xl md:text-2xl tracking-tight text-[#f0ede8]">
                       {firstName} {lastName}
                     </h2>
-                    <p
-                      className="fm mb-6"
-                      style={{ fontSize: 14, color: "#666" }}
-                    >
+                    <p className="fm mb-6 text-sm text-[#666] break-all">
                       {email}
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3 w-full">
                       {[
                         {
                           label: "Account Status",
                           value: "Active",
-                          color: "#00e676",
+                          color: "text-[#00e676]",
                         },
                         {
                           label: "Total Scans",
                           value: totalScans,
-                          color: "#f0ede8",
-                        },
-                        {
-                          label: "Avg Fake Score",
-                          value: `${avgScore}%`,
-                          color: "#ff8800",
+                          color: "text-[#f0ede8]",
                         },
                       ].map(({ label, value, color }) => (
                         <div
                           key={label}
-                          className="rounded-2xl flex-1"
-                          style={{
-                            background: "#121212",
-                            border: "1px solid #1c1c1c",
-                            padding: "14px 18px",
-                            textAlign: "left",
-                          }}
+                          className="rounded-2xl flex-1 bg-[#121212] border border-[#1c1c1c] p-4 text-center sm:text-left"
                         >
                           <div
-                            className="font-bold"
-                            style={{ fontSize: 18, color, letterSpacing: -0.5 }}
+                            className={`font-bold text-xl md:text-2xl tracking-tight ${color}`}
                           >
                             {value}
                           </div>
-                          <div
-                            className="fm mt-1"
-                            style={{
-                              fontSize: 10,
-                              color: "#555",
-                              letterSpacing: 1,
-                              textTransform: "uppercase",
-                            }}
-                          >
+                          <div className="fm mt-1 text-[10px] text-zinc-400 tracking-widest uppercase">
                             {label}
                           </div>
                         </div>
@@ -992,133 +785,9 @@ export default function DashboardClientView({ user, analysis = [] }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                {[
-                  {
-                    label: "Fake Claims Detected",
-                    value: fakeCount,
-                    themeColor: "text-red-400",
-                    glowColor: "group-hover:after:bg-red-500/[0.04]",
-                    borderColor: "border-red-500/10 hover:border-red-500/20",
-                    bgBadge: "bg-red-500/10 text-red-400 border-red-500/20",
-                    icon: (
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
-                        />
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: "Misleading Content Found",
-                    value: misleadCount,
-                    themeColor: "text-orange-400",
-                    glowColor: "group-hover:after:bg-orange-500/[0.04]",
-                    borderColor:
-                      "border-orange-500/10 hover:border-orange-500/20",
-                    bgBadge:
-                      "bg-orange-500/10 text-orange-400 border-orange-500/20",
-                    icon: (
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                        />
-                      </svg>
-                    ),
-                  },
-                  {
-                    label: "Real Claims Verified",
-                    value: realCount,
-                    themeColor: "text-emerald-400",
-                    glowColor: "group-hover:after:bg-emerald-500/[0.04]",
-                    borderColor:
-                      "border-emerald-500/10 hover:border-emerald-500/20",
-                    bgBadge:
-                      "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-                    icon: (
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"
-                        />
-                      </svg>
-                    ),
-                  },
-                ].map(
-                  ({
-                    label,
-                    value,
-                    themeColor,
-                    glowColor,
-                    borderColor,
-                    bgBadge,
-                    icon,
-                  }) => (
-                    <div
-                      key={label}
-                      className={`group relative overflow-hidden rounded-xl border bg-neutral-950/40 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 ${borderColor} ${value === 0 ? "opacity-50" : "opacity-100"}`}
-                    >
-                      <div
-                        className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none after:absolute after:inset-0 after:rounded-xl after:blur-xl ${glowColor}`}
-                      />
-
-                      <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div className="flex items-center justify-between mb-4">
-                          <div
-                            className={`p-2 rounded-lg bg-neutral-900 border border-neutral-800/60 ${themeColor}`}
-                          >
-                            {icon}
-                          </div>
-                          <span
-                            className={`text-[10px] tracking-wider font-mono uppercase font-semibold px-2 py-0.5 rounded border ${bgBadge}`}
-                          >
-                            {value === 0 ? "Idle" : "Live Stream"}
-                          </span>
-                        </div>
-
-                        <div>
-                          <div
-                            className={`text-4xl font-bold font-mono tracking-tight tabular-nums transition-colors duration-300 ${value > 0 ? themeColor : "text-neutral-500"}`}
-                          >
-                            {value.toLocaleString()}
-                          </div>
-
-                          <div className="text-xs text-neutral-400 mt-1.5 font-medium tracking-wide">
-                            {label}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ),
-                )}
-              </div>
-
-              {/* Detailed Meta Parameters Box */}
-              <div className="rounded-xl border border-neutral-800/60 bg-neutral-950/40 p-5 md:p-6 backdrop-blur-md mb-6">
-                <div className="text-[10px] font-mono uppercase tracking-widest text-neutral-500 font-semibold mb-2">
+              {/* --- Detailed Meta Parameters Box --- */}
+              <div className="rounded-2xl border border-neutral-800/60 bg-neutral-950/40 p-5 md:p-8 backdrop-blur-md mb-8">
+                <div className="text-xs md:text-sm font-mono uppercase tracking-widest text-neutral-500 font-bold mb-4">
                   Account Information
                 </div>
 
@@ -1139,16 +808,13 @@ export default function DashboardClientView({ user, analysis = [] }) {
                   ].map(({ label, value, badge }) => (
                     <div
                       key={label}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between py-4 gap-2 first:pt-2 last:pb-2"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between py-4 md:py-5 gap-1 sm:gap-3 first:pt-2 last:pb-2"
                     >
-                      <span className="text-xs font-medium text-neutral-400">
+                      <span className="text-sm md:text-base font-medium text-neutral-400">
                         {label}
                       </span>
-
                       <span
-                        className={`text-xs md:text-sm text-neutral-300 max-w-none sm:max-w-[450px] text-left sm:text-right leading-relaxed ${
-                          badge ? "font-mono text-emerald-400 font-medium" : ""
-                        }`}
+                        className={`text-sm md:text-base text-neutral-300 sm:max-w-[500px] sm:text-right leading-relaxed break-words ${badge ? "font-mono text-emerald-400 font-bold" : ""}`}
                       >
                         {value}
                       </span>
@@ -1158,12 +824,10 @@ export default function DashboardClientView({ user, analysis = [] }) {
               </div>
 
               {/* Danger Zone Segment */}
-              <div className="rounded-xl border border-red-500/10 bg-red-500/1 p-5 md:p-6 mb-6 backdrop-blur-md">
-  
+              <div className="rounded-xl border border-red-500/10 bg-red-500/5 p-5 md:p-6 mb-6 backdrop-blur-md">
                 <div className="text-[10px] font-mono uppercase tracking-widest text-red-400 font-semibold mb-2">
                   Danger Zone
                 </div>
-
                 <p className="text-xs md:text-sm text-neutral-500 mb-5 leading-relaxed max-w-xl">
                   Terminate your current active session and securely clear local
                   system states and cache tokens immediately.
@@ -1171,7 +835,7 @@ export default function DashboardClientView({ user, analysis = [] }) {
                 <button
                   onClick={handleLogout}
                   disabled={loggingOut}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-red-500/15 bg-red-500/5 text-xs font-semibold font-mono tracking-wide text-red-400 transition-all duration-200 hover:bg-red-500/10 hover:border-red-500/25 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus:ring-1 focus:ring-red-500/30"
+                  className="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-red-500/15 bg-red-500/10 text-xs font-semibold font-mono tracking-wide text-red-400 transition-all duration-200 hover:bg-red-500/20 hover:border-red-500/25 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus:ring-1 focus:ring-red-500/30"
                 >
                   {loggingOut ? (
                     <>
