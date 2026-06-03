@@ -9,9 +9,8 @@
 AI-powered claim verification using live evidence, source ranking, and claim-level reasoning.
 
 ## Live Demo
-
 🚀 Try Veridex:
-[Live URL Here]
+[https://veridex-snowy.vercel.app]
 
 📂 Source Code:
 https://github.com/MallikarjunaJ15/Veridex
