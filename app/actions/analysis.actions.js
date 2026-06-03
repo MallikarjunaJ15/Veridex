@@ -110,8 +110,15 @@ export const getUserHistory = async () => {
 export const getAnalysisById = async (id) => {
   try {
     await connectDb();
-    const analysis = await analysisModel.findById(id).lean();
+    const userId = await generateUserFromToken();
+    if (!userId) {
+      return { analysis: null };
+    }
+    const analysis = await analysisModel.findOne({ _id: id, userId }).lean();
     if (!analysis) return { analysis: null };
+    if (analysis.userId.toString() !== userId) {
+      return { analysis: null };
+    }
     return { analysis: JSON.parse(JSON.stringify(analysis)) };
   } catch (error) {
     return { analysis: null };
