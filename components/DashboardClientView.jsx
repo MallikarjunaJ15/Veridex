@@ -1,6 +1,7 @@
 "use client";
 import { logoutUser } from "@/app/actions/auth.actions";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const verdictConfig = {
@@ -28,9 +29,11 @@ export default function DashboardClientView({ user, analysis = [] }) {
   const [activeTab, setActiveTab] = useState("analysis");
   const [loggingOut, setLoggingOut] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
   const handleLogout = async () => {
     setLoggingOut(true);
     await logoutUser();
+    router.push("/login");
   };
 
   const firstName = user?.fullname?.firstname || "User";
@@ -718,7 +721,6 @@ export default function DashboardClientView({ user, analysis = [] }) {
               </div>
 
               <div className="rounded-3xl relative overflow-hidden mb-6 bg-[#0d0d0d] border border-[#1e1e1e] p-6 md:p-10">
-              
                 <div
                   className="absolute -top-30 -right-30 w-100 h-100 rounded-full pointer-events-none"
                   style={{

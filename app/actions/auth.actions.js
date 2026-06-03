@@ -83,7 +83,7 @@ export const generateUserFromToken = async () => {
     const { payload } = await jwtVerify(token, secret);
     return payload.userId;
   } catch (error) {
-    return { error: "Internal Server Error" };
+    return null;
   }
 };
 
@@ -91,7 +91,9 @@ export const getme = async () => {
   try {
     await connectDb();
     const userId = await generateUserFromToken();
-    if (!userId) return { user: null };
+    if (!userId || typeof userId !== "string") {
+      return { user: null };
+    }
     const user = await userModel.findById(userId).select("-password").lean();
     return { user: JSON.parse(JSON.stringify(user)) };
   } catch (error) {

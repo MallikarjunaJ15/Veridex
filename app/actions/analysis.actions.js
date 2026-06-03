@@ -10,7 +10,9 @@ export const createAnalysis = async ({ article }) => {
     await connectDb();
 
     const userId = await generateUserFromToken();
-    if (!userId) return { error: "Unauthorized" };
+    if (!userId || typeof userId !== "string") {
+      return { error: "Unauthorized" };
+    }
     // Step 1: Extract (Returns Array of Strings)
     const claimsArray = await extractClaim(article);
     console.log("claims", claimsArray);
@@ -89,7 +91,9 @@ export const createAnalysis = async ({ article }) => {
 export const getUserHistory = async () => {
   try {
     const userId = await generateUserFromToken();
-    if (!userId) return { message: "User not found" };
+    if (!userId || typeof userId !== "string") {
+      return { analysis: [] };
+    }
     const analysis = await analysisModel
       .find({ userId: userId })
       .sort({ createdAt: -1 })

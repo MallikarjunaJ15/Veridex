@@ -740,11 +740,19 @@ export default function LandingPage({ user }) {
             Paste it into Veridex before you share it. Takes 10 seconds. Could
             save you from spreading something untrue.
           </p>
-          <a href="/analyze">
-            <button className="bg-[#c8ff00] text-[#080808] border-none px-10 py-4 rounded-xl text-base font-bold tracking-wide inline-flex items-center gap-[10px] cursor-pointer hover:brightness-110 transition-all">
-              Fact-check now — it&apos;s free →
-            </button>
-          </a>
+          {user ? (
+            <a href="/analyze">
+              <button className="bg-[#c8ff00] text-[#080808] border-none px-10 py-4 rounded-xl text-base font-bold tracking-wide inline-flex items-center gap-[10px] cursor-pointer hover:brightness-110 transition-all">
+                Fact-check now — it&apos;s free →
+              </button>
+            </a>
+          ) : (
+            <a href="/login">
+              <button className="bg-[#c8ff00] text-[#080808] border-none px-10 py-4 rounded-xl text-base font-bold tracking-wide inline-flex items-center gap-[10px] cursor-pointer hover:brightness-110 transition-all">
+               Login — it&apos;s free →
+              </button>
+            </a>
+          )}
         </section>
 
         {/* FOOTER */}

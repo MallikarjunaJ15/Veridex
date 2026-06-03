@@ -81,7 +81,10 @@ const NavBar = ({ scrolled, user }) => {
         </div>
 
         <div className="w-full">
-          <a href={user ? "/analyze" : "/login"} onClick={() => setMobileView(false)}>
+          <a
+            href={user ? "/analyze" : "/login"}
+            onClick={() => setMobileView(false)}
+          >
             <button className="w-full bg-[#c8ff00] text-[#080808] font-bold text-base py-4 rounded-xl tracking-wide hover:brightness-110 transition-all">
               {user ? "Try Veridex →" : "Login →"}
             </button>
